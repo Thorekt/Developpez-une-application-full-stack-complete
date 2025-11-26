@@ -4,10 +4,10 @@ server:
 spring:
   application:
     name: config-server
-
-spring:
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        git:
-          uri: file:///${user.home}/config-repo  
+        native:
+          search-locations: file:///${CONFIG_REPO:${project.basedir}/../config-repo}

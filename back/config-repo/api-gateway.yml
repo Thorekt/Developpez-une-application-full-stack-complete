@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: api-gateway
-  config:
-    import: "configserver:http://localhost:9002/"
 
 eureka:
   client:

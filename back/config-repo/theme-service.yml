@@ -1,11 +1,9 @@
 server:
-  port: 9000
+  port: 9200
 
 spring:
   application:
-    name: api-gateway
-  config:
-    import: "configserver:http://localhost:9002/"
+    name: theme-service
 
 eureka:
   client:

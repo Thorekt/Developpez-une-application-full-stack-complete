@@ -4,9 +4,8 @@ server:
 spring:
   application:
     name: theme-service
-  cloud:
-    config:
-      enabled: false
+  config:
+    import: "configserver:http://localhost:9002/"
 
 eureka:
   client:
