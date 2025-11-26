@@ -2,10 +2,19 @@ server:
   port: 9200
 
 spring:
-  application:
-    name: theme-service
+  config:
+    import: "configserver:http://localhost:9002/"
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:9001/eureka/
+  datasource:
+    url: jdbc:mysql://localhost:3306/mdd_theme?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: mdd_theme_access
+    password: j#QHK8KxxchTPxiuyU7SUxMXI&Ax?I
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

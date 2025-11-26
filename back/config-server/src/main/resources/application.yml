@@ -10,4 +10,4 @@ spring:
     config:
       server:
         native:
-          search-locations: file:///${CONFIG_REPO:${project.basedir}/../config-repo}
+          search-locations: "file:../config-repo"

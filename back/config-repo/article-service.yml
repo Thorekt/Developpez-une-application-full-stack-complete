@@ -2,10 +2,19 @@ server:
   port: 9300
 
 spring:
-  application:
-    name: article-service
+  config:
+    import: "configserver:http://localhost:9002/"
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:9001/eureka/
+  datasource:
+    url: jdbc:mysql://localhost:3306/mdd_article?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: mdd_article_access
+    password: X$qaxOnxcjyctyZGqm1Kfn2#aQsF$G
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
