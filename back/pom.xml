@@ -16,6 +16,7 @@
         <spring.cloud.version>2025.1.0</spring.cloud.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <org.projectlombok.version>1.18.42</org.projectlombok.version>
+        <org.mockito.version>5.20.0</org.mockito.version>
     </properties>
 
     <dependencyManagement>
