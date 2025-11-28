@@ -2,6 +2,8 @@ package com.thorekt.mdd.microservice.user_service.dto;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -23,4 +25,7 @@ public class UserDto {
     @NonNull
     @Size(min = 3, max = 50)
     private String username;
+
+    @JsonIgnore
+    private String password;
 }
