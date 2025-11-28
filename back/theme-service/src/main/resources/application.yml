@@ -6,7 +6,9 @@ spring:
     name: theme-service
   config:
     import: "configserver:http://localhost:9002/"
-
+  cloud:
+    config:
+      fail-fast: true
 eureka:
   client:
     service-url:
