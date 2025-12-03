@@ -3,7 +3,7 @@ package com.thorekt.mdd.microservice.user_service.mapper;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 import com.thorekt.mdd.microservice.user_service.dto.UserDto;
-import com.thorekt.mdd.microservice.user_service.models.User;
+import com.thorekt.mdd.microservice.user_service.model.User;
 
 @Component
 @Mapper(componentModel = "spring")

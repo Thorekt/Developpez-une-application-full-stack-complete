@@ -1,4 +1,4 @@
-package com.thorekt.mdd.microservice.user_service.models;
+package com.thorekt.mdd.microservice.user_service.model;
 
 import java.util.UUID;
 
