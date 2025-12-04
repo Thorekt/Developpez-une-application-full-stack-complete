@@ -1,6 +1,7 @@
 package com.thorekt.mdd.microservice.user_service.service;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 
@@ -36,17 +37,19 @@ public class JWTService {
     /**
      * Generate a JWT token for the given authentication
      * 
-     * @param authentication
+     * @param userUUID UUID of the user
+     * @param username Username of the user
      * @return JWT token
      */
-    public String generateToken(Authentication authentication) {
+    public String generateToken(Authentication authentication, UUID userUUID) {
         Instant now = Instant.now();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(issuer)
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiresIn))
-                .subject(authentication.getName())
+                .subject(userUUID.toString())
+                .claim("username", authentication.getName())
                 .build();
 
         JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters
