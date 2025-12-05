@@ -14,7 +14,9 @@ import org.springframework.util.Assert;
 
 import com.thorekt.mdd.microservice.user_service.dto.request.LoginRequest;
 import com.thorekt.mdd.microservice.user_service.dto.request.RegisterRequest;
+import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.AuthResponse;
+import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.service.AuthenticationService;
@@ -51,12 +53,11 @@ public class AuthControllerTest {
                 .thenReturn(token);
 
         // When
-        ResponseEntity<AuthResponse> response = classUnderTest.login(request);
+        ResponseEntity<ApiResponse> response = classUnderTest.login(request);
 
         // Then
-        assertEquals(token, response.getBody().token());
+        assertEquals(token, ((AuthResponse) response.getBody()).token());
         assertEquals(HttpStatusCode.valueOf(201), response.getStatusCode());
-        assertEquals("n/a", response.getBody().error());
         Mockito.verify(mockAuthenticationService).authenticate(request.loginValue(), request.password());
     }
 
@@ -68,12 +69,11 @@ public class AuthControllerTest {
         Mockito.when(mockAuthenticationService.authenticate(request.loginValue(), request.password()))
                 .thenThrow(new BadCredentialsException());
         // When
-        ResponseEntity<AuthResponse> response = classUnderTest.login(request);
+        ResponseEntity<ApiResponse> response = classUnderTest.login(request);
 
         // Then
-        assertEquals(null, response.getBody().token());
         assertEquals(HttpStatusCode.valueOf(401), response.getStatusCode());
-        assertEquals("BAD_CREDENTIALS", response.getBody().error());
+        assertEquals("BAD_CREDENTIALS", ((ErrorResponse) response.getBody()).error());
         Mockito.verify(mockAuthenticationService).authenticate(request.loginValue(), request.password());
     }
 
@@ -86,12 +86,11 @@ public class AuthControllerTest {
                 .thenThrow(new RuntimeException());
 
         // When
-        ResponseEntity<AuthResponse> response = classUnderTest.login(request);
+        ResponseEntity<ApiResponse> response = classUnderTest.login(request);
 
         // Then
-        assertEquals(null, response.getBody().token());
         assertEquals(HttpStatusCode.valueOf(500), response.getStatusCode());
-        assertEquals("INTERNAL_SERVER_ERROR", response.getBody().error());
+        assertEquals("INTERNAL_SERVER_ERROR", ((ErrorResponse) response.getBody()).error());
         Mockito.verify(mockAuthenticationService).authenticate(request.loginValue(), request.password());
     }
 
@@ -108,12 +107,11 @@ public class AuthControllerTest {
                 .registerUser(request.email(), request.username(), request.password());
 
         // When
-        ResponseEntity<AuthResponse> response = classUnderTest.register(request);
+        ResponseEntity<ApiResponse> response = classUnderTest.register(request);
 
         // Then
-        assertEquals(token, response.getBody().token());
+        assertEquals(token, ((AuthResponse) response.getBody()).token());
         assertEquals(HttpStatusCode.valueOf(201), response.getStatusCode());
-        assertEquals("n/a", response.getBody().error());
         Mockito.verify(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
         Mockito.verify(mockAuthenticationService).authenticate(request.username(), request.password());
 
@@ -128,12 +126,11 @@ public class AuthControllerTest {
                 .when(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
 
         // When
-        ResponseEntity<AuthResponse> response = classUnderTest.register(request);
+        ResponseEntity<ApiResponse> response = classUnderTest.register(request);
 
         // Then
-        assertEquals("n/a", response.getBody().token());
         assertEquals(HttpStatusCode.valueOf(409), response.getStatusCode());
-        assertEquals("EMAIL_ALREADY_IN_USE", response.getBody().error());
+        assertEquals("EMAIL_ALREADY_IN_USE", ((ErrorResponse) response.getBody()).error());
         Mockito.verify(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
         Mockito.verifyNoInteractions(mockAuthenticationService);
 
@@ -148,12 +145,11 @@ public class AuthControllerTest {
                 .when(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
 
         // When
-        ResponseEntity<AuthResponse> response = classUnderTest.register(request);
+        ResponseEntity<ApiResponse> response = classUnderTest.register(request);
 
         // Then
-        assertEquals("n/a", response.getBody().token());
         assertEquals(HttpStatusCode.valueOf(500), response.getStatusCode());
-        assertEquals("INTERNAL_SERVER_ERROR", response.getBody().error());
+        assertEquals("INTERNAL_SERVER_ERROR", ((ErrorResponse) response.getBody()).error());
         Mockito.verify(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
         Mockito.verifyNoInteractions(mockAuthenticationService);
 

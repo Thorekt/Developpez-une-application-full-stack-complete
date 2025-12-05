@@ -11,7 +11,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 
 import com.thorekt.mdd.microservice.user_service.dto.request.LoginRequest;
 import com.thorekt.mdd.microservice.user_service.dto.request.RegisterRequest;
+import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.AuthResponse;
+import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAndUsernameAlreadyInUseException;
@@ -47,7 +49,7 @@ public class AuthController {
      * @return AuthResponse with JWT token if successful
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<ApiResponse> login(@RequestBody @Valid LoginRequest request) {
 
         try {
             String token = authenticationService.authenticate(
@@ -56,10 +58,10 @@ public class AuthController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse(null, e.getMessage()));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new AuthResponse(null, "INTERNAL_SERVER_ERROR"));
+                    .body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
         }
     }
 
@@ -70,14 +72,14 @@ public class AuthController {
      * @return AuthResponse with JWT token if successful
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request) {
+    public ResponseEntity<ApiResponse> register(@RequestBody @Valid RegisterRequest request) {
         try {
             registrationService.registerUser(request.email(), request.username(), request.password());
         } catch (RegistrationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse("n/a", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new AuthResponse("n/a", "INTERNAL_SERVER_ERROR"));
+                    .body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
         }
 
         return this.login(new LoginRequest(request.username(), request.password()));
