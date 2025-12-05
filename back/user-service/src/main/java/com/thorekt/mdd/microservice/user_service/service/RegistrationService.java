@@ -11,6 +11,7 @@ import com.thorekt.mdd.microservice.user_service.model.User;
 import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -35,7 +36,7 @@ public class RegistrationService {
      * @throws Exception
      */
     @Transactional
-    public void registerUser(String email, String username, String rawPassword) throws RegistrationException {
+    public void registerUser(@Email String email, String username, String rawPassword) throws RegistrationException {
         boolean emailExists = userRepository.existsByEmail(email);
         boolean usernameExists = userRepository.existsByUsername(username);
         if (emailExists && usernameExists) {
