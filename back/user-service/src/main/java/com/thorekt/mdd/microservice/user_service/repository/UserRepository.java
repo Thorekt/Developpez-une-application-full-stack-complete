@@ -46,4 +46,20 @@ public interface UserRepository extends CrudRepository<User, UUID> {
      * @return User entity
      */
     User findByUuid(UUID uuid);
+
+    /**
+     * Check if a user exists by email
+     * 
+     * @param email
+     * @return
+     */
+    boolean existsByEmail(String email);
+
+    /**
+     * Check if a user exists by username
+     * 
+     * @param username
+     * @return
+     */
+    boolean existsByUsername(String username);
 }
