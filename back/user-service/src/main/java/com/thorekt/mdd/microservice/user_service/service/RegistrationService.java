@@ -12,6 +12,11 @@ import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Service for user registration
+ * 
+ * @author Thorekt
+ */
 @Service
 @RequiredArgsConstructor
 public class RegistrationService {

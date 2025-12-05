@@ -10,6 +10,11 @@ import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Service for user operations
+ * 
+ * @author Thorekt
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
