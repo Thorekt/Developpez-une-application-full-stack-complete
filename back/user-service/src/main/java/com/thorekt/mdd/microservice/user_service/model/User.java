@@ -10,6 +10,11 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+/**
+ * User entity
+ * 
+ * @author Thorekt
+ */
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email"),
