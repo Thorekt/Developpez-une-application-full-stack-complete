@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAndUsernameAlreadyInUseException;
+import com.thorekt.mdd.microservice.user_service.exception.registration.RegistrationException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.UsernameAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.model.User;
 import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
@@ -34,7 +35,7 @@ public class RegistrationService {
      * @throws Exception
      */
     @Transactional
-    public void registerUser(String email, String username, String rawPassword) throws Exception {
+    public void registerUser(String email, String username, String rawPassword) throws RegistrationException {
         boolean emailExists = userRepository.existsByEmail(email);
         boolean usernameExists = userRepository.existsByUsername(username);
         if (emailExists && usernameExists) {
