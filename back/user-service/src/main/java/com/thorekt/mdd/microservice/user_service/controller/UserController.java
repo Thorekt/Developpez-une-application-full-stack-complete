@@ -1,0 +1,48 @@
+package com.thorekt.mdd.microservice.user_service.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
+import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
+import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
+import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
+import com.thorekt.mdd.microservice.user_service.service.UserService;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Controller for user-related operations
+ * 
+ * @author Thorekt
+ */
+@RestController
+@RequestMapping("/user")
+@RequiredArgsConstructor
+public class UserController {
+    private final UserService userService;
+    private final UserMapper userMapper;
+
+    /**
+     * Find a user by UUID
+     * 
+     * @param uuid UUID of the user
+     * @return UserDto of the found user
+     * @throws NotFoundException
+     */
+    @RequestMapping("/{uuid}")
+    public ResponseEntity<ApiResponse> findById(String uuid) {
+        try {
+            var user = userService.findByUuid(uuid);
+            var userDto = userMapper.toDto(user);
+            return ResponseEntity.ok(userDto);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(new ErrorResponse("INVALID_FORMAT"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
+        }
+    }
+}
