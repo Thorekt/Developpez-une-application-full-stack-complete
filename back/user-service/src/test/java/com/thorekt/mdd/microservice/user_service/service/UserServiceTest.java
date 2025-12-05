@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.model.User;
@@ -20,12 +21,14 @@ import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
 public class UserServiceTest {
     @Mock
     UserRepository mockUserRepository;
+    @Mock
+    PasswordEncoder mockPasswordEncoder;
 
     UserService classUnderTest;
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new UserService(mockUserRepository);
+        classUnderTest = new UserService(mockUserRepository, mockPasswordEncoder);
     }
 
     @Test
@@ -126,5 +129,59 @@ public class UserServiceTest {
         }
         assertNull(foundUser);
         Mockito.verify(mockUserRepository).findByUuid(userUuid);
+    }
+
+    @Test
+    public void updateUser_ShouldUpdateUserDetails_whenUserExists() {
+        // Given
+        String userUuidString = UUID.randomUUID().toString();
+        UUID userUuid = UUID.fromString(userUuidString);
+        User existingUser = User.builder()
+                .id(userUuid)
+                .username("old-username")
+                .email("old-email@example.com")
+                .password("old-password")
+                .build();
+
+        String newEmail = "new-email@example.com";
+        String newUsername = "new-username";
+        String newPassword = "new-password";
+        String encodedNewPassword = "encoded-new-password";
+
+        Mockito.when(mockPasswordEncoder.encode(newPassword))
+                .thenReturn(encodedNewPassword);
+
+        Mockito.when(mockUserRepository.findByUuid(userUuid))
+                .thenReturn(existingUser);
+
+        // When
+        classUnderTest.updateUser(userUuidString, newEmail, newUsername, newPassword);
+
+        // Then
+        assertEquals(newEmail, existingUser.getEmail());
+        assertEquals(newUsername, existingUser.getUsername());
+        assertEquals(encodedNewPassword, existingUser.getPassword());
+        Mockito.verify(mockUserRepository).findByUuid(userUuid);
+        Mockito.verify(mockUserRepository).save(existingUser);
+    }
+
+    @Test
+    public void updateUser_ShouldThrowNotFoundException_whenUserDoesNotExist() {
+        // Given
+        String userUuidString = UUID.randomUUID().toString();
+        UUID userUuid = UUID.fromString(userUuidString);
+        Mockito.when(mockUserRepository.findByUuid(userUuid))
+                .thenReturn(null);
+
+        // When / Then
+        try {
+            classUnderTest.updateUser(userUuidString, "email", "username", "password");
+            assertEquals(true, false); // Force fail if no exception is thrown
+        } catch (Exception e) {
+            assertEquals(NotFoundException.class, e.getClass());
+        }
+        Mockito.verify(mockUserRepository).findByUuid(userUuid);
+        Mockito.verifyNoMoreInteractions(mockUserRepository);
+        Mockito.verifyNoInteractions(mockPasswordEncoder);
     }
 }
