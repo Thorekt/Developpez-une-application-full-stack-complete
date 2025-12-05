@@ -1,5 +1,7 @@
 package com.thorekt.mdd.microservice.user_service.service;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
@@ -27,4 +29,20 @@ public class UserService {
         }
         return user;
     }
+
+    /**
+     * Find a user by uuid
+     * 
+     * @param uuid UUID of the user
+     * @return the found User
+     * @throws NotFoundException
+     */
+    public User findByUuid(String uuid) throws NotFoundException {
+        User user = userRepository.findByUuid(UUID.fromString(uuid));
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        return user;
+    }
+
 }

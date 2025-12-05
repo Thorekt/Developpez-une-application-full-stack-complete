@@ -2,6 +2,27 @@ server:
   port: 9000
 
 spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+        
+        - id: theme-service
+          uri: lb://theme-service
+          predicates:
+            - Path=/themes/**
+        
+        - id: article-service
+          uri: lb://article-service
+          predicates:
+            - Path=/articles/**
 
 eureka:
   client:

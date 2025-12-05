@@ -1,6 +1,7 @@
 package com.thorekt.mdd.microservice.user_service.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.UUID;
 
@@ -78,11 +79,52 @@ public class UserServiceTest {
         Mockito.when(mockUserRepository.findByEmailOrUsername(emailOrUsername, emailOrUsername))
                 .thenReturn(null);
         // When / Then
+        User foundUser = null;
         try {
-            classUnderTest.findByEmailOrUsername(emailOrUsername);
+            foundUser = classUnderTest.findByEmailOrUsername(emailOrUsername);
         } catch (Exception e) {
             assertEquals(NotFoundException.class, e.getClass());
         }
+        assertNull(foundUser);
         Mockito.verify(mockUserRepository).findByEmailOrUsername(emailOrUsername, emailOrUsername);
+    }
+
+    @Test
+    public void findByUuid_ShouldReturnUser_whenUserExists() {
+        // Given
+        UUID userUuid = UUID.randomUUID();
+        User user = User.builder()
+                .id(userUuid)
+                .username("test-user")
+                .email("test-user@example.com")
+                .password("hashed-password")
+                .build();
+
+        Mockito.when(mockUserRepository.findByUuid(userUuid))
+                .thenReturn(user);
+
+        // When
+        User foundUser = classUnderTest.findByUuid(userUuid.toString());
+
+        // Then
+        assertEquals(user, foundUser);
+        Mockito.verify(mockUserRepository).findByUuid(userUuid);
+    }
+
+    @Test
+    public void findByUuid_ShouldThrowNotFoundException_whenUserDoesNotExist() {
+        // Given
+        UUID userUuid = UUID.randomUUID();
+        Mockito.when(mockUserRepository.findByUuid(userUuid))
+                .thenReturn(null);
+        // When / Then
+        User foundUser = null;
+        try {
+            foundUser = classUnderTest.findByUuid(userUuid.toString());
+        } catch (Exception e) {
+            assertEquals(NotFoundException.class, e.getClass());
+        }
+        assertNull(foundUser);
+        Mockito.verify(mockUserRepository).findByUuid(userUuid);
     }
 }
