@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,12 +16,9 @@ public class UserDto {
     private UUID id;
 
     @NonNull
-    @Size(max = 50)
-    @Email
     private String email;
 
     @NonNull
-    @Size(min = 3, max = 50)
     private String username;
 
     @JsonIgnore
