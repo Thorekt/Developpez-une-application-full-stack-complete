@@ -12,17 +12,22 @@ spring:
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/users/**
-        
+            - Path=/user/**
+
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/auth/**
+
         - id: theme-service
           uri: lb://theme-service
           predicates:
-            - Path=/themes/**
-        
+            - Path=/theme/**
+
         - id: article-service
           uri: lb://article-service
           predicates:
-            - Path=/articles/**
+            - Path=/article/**
 
 eureka:
   client:
