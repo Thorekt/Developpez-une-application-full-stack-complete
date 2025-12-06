@@ -41,7 +41,7 @@ public class AuthenticationService {
             throw new BadCredentialsException();
         }
 
-        String jwt = jwtService.generateToken(authentication, user.getId());
+        String jwt = jwtService.generateToken(authentication, user.getUuid());
         return jwt;
     }
 

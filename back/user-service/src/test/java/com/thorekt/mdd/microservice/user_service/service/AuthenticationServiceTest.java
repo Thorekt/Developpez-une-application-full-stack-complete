@@ -50,7 +50,7 @@ public class AuthenticationServiceTest {
         String userNameString = "username";
         UUID userUUID = UUID.randomUUID();
         User user = User.builder()
-                .id(userUUID)
+                .uuid(userUUID)
                 .username(userNameString)
                 .email("user@example.com")
                 .password("hashed-password")
@@ -101,7 +101,7 @@ public class AuthenticationServiceTest {
         // Given
         String userNameString = "username";
         User user = User.builder()
-                .id(UUID.randomUUID())
+                .uuid(UUID.randomUUID())
                 .username(userNameString)
                 .email("user@example.com")
                 .password("hashed-password")

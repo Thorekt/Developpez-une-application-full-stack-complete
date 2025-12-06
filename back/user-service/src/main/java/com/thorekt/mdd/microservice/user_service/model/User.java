@@ -32,7 +32,7 @@ import lombok.experimental.Accessors;
 public class User {
     @Id
     @GeneratedValue
-    private UUID id;
+    private UUID uuid;
 
     @NonNull
     @Size(max = 50)

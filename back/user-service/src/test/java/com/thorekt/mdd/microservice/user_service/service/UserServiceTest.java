@@ -36,7 +36,7 @@ public class UserServiceTest {
         // Given
         String emailString = "test-user@example.com";
         User user = User.builder()
-                .id(UUID.randomUUID())
+                .uuid(UUID.randomUUID())
                 .username("test-user")
                 .email(emailString)
                 .password("hashed-password")
@@ -58,7 +58,7 @@ public class UserServiceTest {
         // Given
         String usernameString = "test-user";
         User user = User.builder()
-                .id(UUID.randomUUID())
+                .uuid(UUID.randomUUID())
                 .username(usernameString)
                 .email("test-user@example.com")
                 .password("hashed-password")
@@ -97,7 +97,7 @@ public class UserServiceTest {
         // Given
         UUID userUuid = UUID.randomUUID();
         User user = User.builder()
-                .id(userUuid)
+                .uuid(userUuid)
                 .username("test-user")
                 .email("test-user@example.com")
                 .password("hashed-password")
@@ -137,7 +137,7 @@ public class UserServiceTest {
         String userUuidString = UUID.randomUUID().toString();
         UUID userUuid = UUID.fromString(userUuidString);
         User existingUser = User.builder()
-                .id(userUuid)
+                .uuid(userUuid)
                 .username("old-username")
                 .email("old-email@example.com")
                 .password("old-password")

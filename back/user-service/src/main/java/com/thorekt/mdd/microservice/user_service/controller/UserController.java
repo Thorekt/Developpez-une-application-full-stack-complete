@@ -1,6 +1,8 @@
 package com.thorekt.mdd.microservice.user_service.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,6 +12,7 @@ import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
 import com.thorekt.mdd.microservice.user_service.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -31,8 +34,8 @@ public class UserController {
      * @return UserDto of the found user
      * @throws NotFoundException
      */
-    @RequestMapping("/{uuid}")
-    public ResponseEntity<ApiResponse> findById(String uuid) {
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ApiResponse> findByUuid(@PathVariable @Valid String uuid) {
         try {
             var user = userService.findByUuid(uuid);
             var userDto = userMapper.toDto(user);
@@ -45,4 +48,5 @@ public class UserController {
             return ResponseEntity.status(500).body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
         }
     }
+
 }

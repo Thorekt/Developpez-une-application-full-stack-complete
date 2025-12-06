@@ -16,7 +16,7 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Builder
 public class UserDto implements ApiResponse {
-    private UUID id;
+    private UUID uuid;
 
     @NonNull
     private String email;
