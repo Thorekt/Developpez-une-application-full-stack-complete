@@ -18,3 +18,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+security:
+  jwt:
+    private-key: classpath:jwt/private-pkcs8.pem
+    public-key: classpath:jwt/public.pem
+    issuer: self
+    expires-in: 3600
