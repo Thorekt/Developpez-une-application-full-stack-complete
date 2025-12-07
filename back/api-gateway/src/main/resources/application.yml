@@ -9,8 +9,61 @@ spring:
   cloud:
     config:
       fail-fast: true
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            # Routes vers user-service (qui gère users + auth)
+            - id: user-service-auth
+              uri: lb://user-service
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - StripPrefix=1 # /api/auth/login → /auth/login
+
+            - id: user-service-users
+              uri: lb://user-service
+              predicates:
+                - Path=/api/user/**
+              filters:
+                - StripPrefix=1
+
+            # Route vers theme-service
+            - id: theme-service
+              uri: lb://theme-service
+              predicates:
+                - Path=/api/theme/**
+              filters:
+                - StripPrefix=1
+
+            # Route vers article-service
+            - id: article-service
+              uri: lb://article-service
+              predicates:
+                - Path=/api/article/**
+              filters:
+                - StripPrefix=1
 
 eureka:
   client:
+    registerWithEureka: true
+    fetchRegistry: true
     service-url:
-      defaultZone: http://localhost:9001/eureka/
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      management.port: ${management.server.port:9000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -1,35 +1,16 @@
 server:
   port: 9000
 
-spring:
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/user/**
-
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/auth/**
-
-        - id: theme-service
-          uri: lb://theme-service
-          predicates:
-            - Path=/theme/**
-
-        - id: article-service
-          uri: lb://article-service
-          predicates:
-            - Path=/article/**
-
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:9001/eureka/
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
