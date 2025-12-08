@@ -2,6 +2,8 @@ package com.thorekt.mdd.microservice.user_service.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,20 +12,22 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
+import org.springframework.security.oauth2.jwt.Jwt;
 
+import com.thorekt.mdd.microservice.user_service.dto.UserDto;
 import com.thorekt.mdd.microservice.user_service.dto.request.LoginRequest;
 import com.thorekt.mdd.microservice.user_service.dto.request.RegisterRequest;
 import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.AuthResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
+import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlreadyInUseException;
+import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
+import com.thorekt.mdd.microservice.user_service.model.User;
 import com.thorekt.mdd.microservice.user_service.service.AuthenticationService;
 import com.thorekt.mdd.microservice.user_service.service.RegistrationService;
 import com.thorekt.mdd.microservice.user_service.service.UserService;
-
-import io.micrometer.core.ipc.http.HttpSender.Response;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {
@@ -36,11 +40,15 @@ public class AuthControllerTest {
     @Mock
     private UserService mockUserService;
 
+    @Mock
+    private UserMapper mockUserMapper;
+
     private AuthController classUnderTest;
 
     @BeforeEach
     public void setUp() {
-        classUnderTest = new AuthController(mockAuthenticationService, mockRegistrationService, mockUserService);
+        classUnderTest = new AuthController(mockAuthenticationService, mockRegistrationService, mockUserService,
+                mockUserMapper);
     }
 
     @Test
@@ -152,6 +160,91 @@ public class AuthControllerTest {
         assertEquals("INTERNAL_SERVER_ERROR", ((ErrorResponse) response.getBody()).error());
         Mockito.verify(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
         Mockito.verifyNoInteractions(mockAuthenticationService);
+    }
 
+    @Test
+    public void me_ShouldReturnUserDto() {
+        // Given
+        UUID tokenSub = UUID.randomUUID();
+        Jwt jwt = Mockito.mock(Jwt.class);
+
+        Mockito.when(jwt.getClaimAsString("sub")).thenReturn(tokenSub.toString());
+        User user = User.builder()
+                .uuid(tokenSub)
+                .username("username")
+                .email("email@example.com")
+                .password("password")
+                .build();
+
+        UserDto userDto = UserDto.builder()
+                .uuid(tokenSub)
+                .username("username")
+                .email("email@example.com")
+                .build();
+
+        Mockito.when(mockUserService.findByUuid(tokenSub.toString())).thenReturn(user);
+        Mockito.when(mockUserMapper.toDto(user)).thenReturn(userDto);
+
+        // When
+        ResponseEntity<ApiResponse> response = classUnderTest.me(jwt);
+
+        // Then
+        assertEquals(userDto, ((UserDto) response.getBody()));
+        assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+        Mockito.verify(mockUserService).findByUuid(tokenSub.toString());
+        Mockito.verify(mockUserMapper).toDto(user);
+    }
+
+    @Test
+    public void me_ShouldReturnNotFoundResponse_WhenUserNotFound() {
+        // Given
+        String tokenSub = "user-uuid";
+        Jwt jwt = Mockito.mock(Jwt.class);
+        Mockito.when(jwt.getClaimAsString("sub")).thenReturn(tokenSub);
+        Mockito.when(mockUserService.findByUuid(tokenSub)).thenThrow(new NotFoundException());
+
+        // When
+        ResponseEntity<ApiResponse> response = classUnderTest.me(jwt);
+
+        // Then
+        assertEquals(HttpStatusCode.valueOf(404), response.getStatusCode());
+        assertEquals("RESOURCE_NOT_FOUND", ((ErrorResponse) response.getBody()).error());
+        Mockito.verify(mockUserService).findByUuid(tokenSub);
+        Mockito.verifyNoInteractions(mockUserMapper);
+    }
+
+    @Test
+    public void me_ShouldReturnBadRequestResponse_WhenIllegalArgumentExceptionIsThrown() {
+        // Given
+        String tokenSub = "user-uuid";
+        Jwt jwt = Mockito.mock(Jwt.class);
+        Mockito.when(jwt.getClaimAsString("sub")).thenReturn(tokenSub);
+        Mockito.when(mockUserService.findByUuid(tokenSub)).thenThrow(new IllegalArgumentException());
+
+        // When
+        ResponseEntity<ApiResponse> response = classUnderTest.me(jwt);
+        // Then
+        assertEquals(HttpStatusCode.valueOf(400), response.getStatusCode());
+        assertEquals("INVALID_FORMAT", ((ErrorResponse) response.getBody()).error());
+        Mockito.verify(mockUserService).findByUuid(tokenSub);
+        Mockito.verifyNoInteractions(mockUserMapper);
+    }
+
+    @Test
+    public void me_ShouldReturnInternalServerErrorResponse_WhenExceptionIsThrown() {
+        // Given
+        String tokenSub = "user-uuid";
+        Jwt jwt = Mockito.mock(Jwt.class);
+        Mockito.when(jwt.getClaimAsString("sub")).thenReturn(tokenSub);
+        Mockito.when(mockUserService.findByUuid(tokenSub)).thenThrow(new RuntimeException());
+
+        // When
+        ResponseEntity<ApiResponse> response = classUnderTest.me(jwt);
+
+        // Then
+        assertEquals(HttpStatusCode.valueOf(500), response.getStatusCode());
+        assertEquals("INTERNAL_SERVER_ERROR", ((ErrorResponse) response.getBody()).error());
+        Mockito.verify(mockUserService).findByUuid(tokenSub);
+        Mockito.verifyNoInteractions(mockUserMapper);
     }
 }

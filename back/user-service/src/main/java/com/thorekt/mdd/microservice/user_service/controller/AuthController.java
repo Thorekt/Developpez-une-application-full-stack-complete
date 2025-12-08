@@ -1,7 +1,11 @@
 package com.thorekt.mdd.microservice.user_service.controller;
 
+import java.util.logging.Logger;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,13 +17,18 @@ import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.AuthResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
+import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.RegistrationException;
+import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
+import com.thorekt.mdd.microservice.user_service.model.User;
 import com.thorekt.mdd.microservice.user_service.service.AuthenticationService;
 import com.thorekt.mdd.microservice.user_service.service.RegistrationService;
 import com.thorekt.mdd.microservice.user_service.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for authentication and registration operations
@@ -36,6 +45,8 @@ public class AuthController {
     private final RegistrationService registrationService;
 
     private final UserService userService;
+
+    private final UserMapper userMapper;
 
     /**
      * Login a user
@@ -77,6 +88,29 @@ public class AuthController {
                     .body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
         }
         return this.login(new LoginRequest(request.username(), request.password()));
+    }
+
+    /**
+     * Get the current authenticated user's details
+     * 
+     * @param user uuid
+     * @return User details
+     */
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse> me(@AuthenticationPrincipal Jwt jwt) {
+        String uuid = jwt.getClaimAsString("sub");
+
+        try {
+            var user = userService.findByUuid(uuid);
+            var userDto = userMapper.toDto(user);
+            return ResponseEntity.ok(userDto);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(new ErrorResponse("INVALID_FORMAT"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
+        }
     }
 
 }
