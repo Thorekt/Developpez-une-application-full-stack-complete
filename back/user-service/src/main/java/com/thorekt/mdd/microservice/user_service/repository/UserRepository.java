@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties.Apiversion.Use;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.thorekt.mdd.microservice.user_service.model.User;
 
@@ -12,6 +13,7 @@ import com.thorekt.mdd.microservice.user_service.model.User;
  * 
  * @author thorekt
  */
+@Repository
 public interface UserRepository extends CrudRepository<User, UUID> {
 
     /**

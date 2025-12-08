@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(of = { "id" })
+@EqualsAndHashCode(of = { "uuid" })
 @Builder
 @NoArgsConstructor
 @RequiredArgsConstructor
