@@ -10,12 +10,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties.Apiversion.Use;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.thorekt.mdd.microservice.user_service.dto.UserDto;
+import com.thorekt.mdd.microservice.user_service.dto.request.UpdateRequest;
 import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
+import com.thorekt.mdd.microservice.user_service.dto.response.SuccessResponse;
 import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
 import com.thorekt.mdd.microservice.user_service.model.User;
@@ -122,5 +126,94 @@ public class UserControllerTest {
                 assertEquals("INTERNAL_SERVER_ERROR", ((ErrorResponse) response.getBody()).error());
                 Mockito.verify(mockUserService).findByUuid(uuidString);
                 Mockito.verifyNoInteractions(mockUserMapper);
+        }
+
+        @Test
+        public void updateUser_ShouldReturnSuccessResponse_WhenUserIsUpdated() {
+                // Given
+                UUID uuid = UUID.randomUUID();
+                UpdateRequest updateRequest = new UpdateRequest(
+                                "test@example.com", "testuser", "password");
+
+                Jwt jwt = Mockito.mock(Jwt.class);
+                Mockito.when(jwt.getClaimAsString("sub")).thenReturn(uuid.toString());
+
+                // When
+                ResponseEntity<ApiResponse> response = classUnderTest.updateUser(jwt, updateRequest);
+
+                // Then
+                assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+                assertEquals("USER_UPDATED", ((SuccessResponse) response.getBody()).message());
+                Mockito.verify(mockUserService).updateUser(uuid.toString(), updateRequest.email(),
+                                updateRequest.username(),
+                                updateRequest.password());
+        }
+
+        @Test
+        public void updateUser_ShouldReturnNotFoundResponse_WhenUserDoesNotExist() {
+                // Given
+                UUID uuid = UUID.randomUUID();
+                Jwt jwt = Mockito.mock(Jwt.class);
+                UpdateRequest updateRequest = new UpdateRequest(
+                                "test@example.com", "testuser", "password");
+
+                Mockito.when(jwt.getClaimAsString("sub")).thenReturn(uuid.toString());
+                Mockito.doThrow(new NotFoundException()).when(mockUserService).updateUser(
+                                uuid.toString(), updateRequest.email(), updateRequest.username(),
+                                updateRequest.password());
+                // When
+                ResponseEntity<ApiResponse> response = classUnderTest.updateUser(jwt, updateRequest);
+
+                // Then
+                assertEquals(HttpStatusCode.valueOf(404), response.getStatusCode());
+                assertEquals("RESOURCE_NOT_FOUND", ((ErrorResponse) response.getBody()).error());
+                Mockito.verify(mockUserService).updateUser(uuid.toString(), updateRequest.email(),
+                                updateRequest.username(),
+                                updateRequest.password());
+        }
+
+        @Test
+        public void updateUser_ShouldReturnBadRequestResponse_WhenUserServiceThrowsIllegalArgumentException() {
+                // Given
+                UUID uuid = UUID.randomUUID();
+                Jwt jwt = Mockito.mock(Jwt.class);
+                UpdateRequest updateRequest = new UpdateRequest(
+                                "test@example.com", "testuser", "password");
+
+                Mockito.when(jwt.getClaimAsString("sub")).thenReturn(uuid.toString());
+                Mockito.doThrow(new IllegalArgumentException()).when(mockUserService).updateUser(
+                                uuid.toString(), updateRequest.email(), updateRequest.username(),
+                                updateRequest.password());
+                // When
+                ResponseEntity<ApiResponse> response = classUnderTest.updateUser(jwt, updateRequest);
+                // Then
+                assertEquals(HttpStatusCode.valueOf(400), response.getStatusCode());
+                assertEquals("INVALID_FORMAT", ((ErrorResponse) response.getBody()).error());
+                Mockito.verify(mockUserService).updateUser(uuid.toString(), updateRequest.email(),
+                                updateRequest.username(),
+                                updateRequest.password());
+        }
+
+        @Test
+        public void updateUser_ShouldReturnInternalServerErrorResponse_WhenUnexpectedExceptionIsThrown() {
+                // Given
+                UUID uuid = UUID.randomUUID();
+                Jwt jwt = Mockito.mock(Jwt.class);
+                UpdateRequest updateRequest = new UpdateRequest(
+                                "test@example.com", "testuser", "password");
+
+                Mockito.when(jwt.getClaimAsString("sub")).thenReturn(uuid.toString());
+                Mockito.doThrow(new RuntimeException()).when(mockUserService).updateUser(
+                                uuid.toString(), updateRequest.email(), updateRequest.username(),
+                                updateRequest.password());
+                // When
+                ResponseEntity<ApiResponse> response = classUnderTest.updateUser(jwt, updateRequest);
+
+                // Then
+                assertEquals(HttpStatusCode.valueOf(500), response.getStatusCode());
+                assertEquals("INTERNAL_SERVER_ERROR", ((ErrorResponse) response.getBody()).error());
+                Mockito.verify(mockUserService).updateUser(uuid.toString(), updateRequest.email(),
+                                updateRequest.username(),
+                                updateRequest.password());
         }
 }
