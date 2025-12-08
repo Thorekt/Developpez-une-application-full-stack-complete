@@ -1,5 +1,6 @@
 package com.thorekt.mdd.microservice.user_service.config;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 
 import org.springframework.context.annotation.Bean;
@@ -66,6 +67,18 @@ public class SecurityConfig {
     }
 
     /**
+     * JWT decoder bean using RSA public key.
+     * 
+     * @return JwtDecoder
+     * @throws Exception
+     */
+    @Bean
+    public JwtDecoder jwtDecoder() throws Exception {
+        RSAPublicKey publicKey = RsaKeyConverters.x509().convert(publicKeyResource.getInputStream());
+        return NimbusJwtDecoder.withPublicKey(publicKey).build();
+    }
+
+    /**
      * Authentication provider bean using DaoAuthenticationProvider with custom
      * 
      * @param encoder
@@ -93,32 +106,32 @@ public class SecurityConfig {
     }
 
     /**
-     * Security filter chain configuration for all endpoints.
-     * 
-     * @return SecurityFilterChain
+     * Public endpoints: /auth/login, /auth/register, /actuator/**
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/auth/register").permitAll()
-                        .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> {
-                }));
+    @Order(1)
+    public SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/auth/login", "/auth/register", "/actuator/**")
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+
         return http.build();
     }
 
     /**
-     * JWT decoder bean using RSA public key.
-     * 
-     * @return JwtDecoder
-     * @throws Exception
+     * Protected endpoints: everything else, including /auth/me
      */
     @Bean
-    public JwtDecoder jwtDecoder() throws Exception {
-        RSAPublicKey publicKey = RsaKeyConverters.x509().convert(publicKeyResource.getInputStream());
-        return NimbusJwtDecoder.withPublicKey(publicKey).build();
+    @Order(2)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> {
+                }));
+
+        return http.build();
     }
 }
