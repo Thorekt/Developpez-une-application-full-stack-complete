@@ -46,10 +46,10 @@ public class AuthControllerTest {
     @Test
     public void login_ShouldReturnAuthResponse() {
         // Given
-        LoginRequest request = new LoginRequest("loginValue", "password");
+        LoginRequest request = new LoginRequest("login", "password");
         String token = "sample-jwt-token";
 
-        Mockito.when(mockAuthenticationService.authenticate(request.loginValue(), request.password()))
+        Mockito.when(mockAuthenticationService.authenticate(request.login(), request.password()))
                 .thenReturn(token);
 
         // When
@@ -58,15 +58,15 @@ public class AuthControllerTest {
         // Then
         assertEquals(token, ((AuthResponse) response.getBody()).token());
         assertEquals(HttpStatusCode.valueOf(201), response.getStatusCode());
-        Mockito.verify(mockAuthenticationService).authenticate(request.loginValue(), request.password());
+        Mockito.verify(mockAuthenticationService).authenticate(request.login(), request.password());
     }
 
     @Test
     public void login_ShouldReturnAnUnauthorizedResponse_WhenBadCredentials() {
         // Given
-        LoginRequest request = new LoginRequest("loginValue", "wrongPassword");
+        LoginRequest request = new LoginRequest("login", "wrongPassword");
 
-        Mockito.when(mockAuthenticationService.authenticate(request.loginValue(), request.password()))
+        Mockito.when(mockAuthenticationService.authenticate(request.login(), request.password()))
                 .thenThrow(new BadCredentialsException());
         // When
         ResponseEntity<ApiResponse> response = classUnderTest.login(request);
@@ -74,15 +74,15 @@ public class AuthControllerTest {
         // Then
         assertEquals(HttpStatusCode.valueOf(401), response.getStatusCode());
         assertEquals("BAD_CREDENTIALS", ((ErrorResponse) response.getBody()).error());
-        Mockito.verify(mockAuthenticationService).authenticate(request.loginValue(), request.password());
+        Mockito.verify(mockAuthenticationService).authenticate(request.login(), request.password());
     }
 
     @Test
     public void login_ShouldReturnAnInternalServerErrorResponse_WhenExceptionIsThrown() {
         // Given
-        LoginRequest request = new LoginRequest("loginValue", "password");
+        LoginRequest request = new LoginRequest("login", "password");
 
-        Mockito.when(mockAuthenticationService.authenticate(request.loginValue(), request.password()))
+        Mockito.when(mockAuthenticationService.authenticate(request.login(), request.password()))
                 .thenThrow(new RuntimeException());
 
         // When
@@ -91,7 +91,7 @@ public class AuthControllerTest {
         // Then
         assertEquals(HttpStatusCode.valueOf(500), response.getStatusCode());
         assertEquals("INTERNAL_SERVER_ERROR", ((ErrorResponse) response.getBody()).error());
-        Mockito.verify(mockAuthenticationService).authenticate(request.loginValue(), request.password());
+        Mockito.verify(mockAuthenticationService).authenticate(request.login(), request.password());
     }
 
     @Test

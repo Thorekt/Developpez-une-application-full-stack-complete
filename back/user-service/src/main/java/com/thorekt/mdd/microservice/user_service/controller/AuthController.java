@@ -1,13 +1,11 @@
 package com.thorekt.mdd.microservice.user_service.controller;
 
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties.Apiversion.Use;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 
 import com.thorekt.mdd.microservice.user_service.dto.request.LoginRequest;
 import com.thorekt.mdd.microservice.user_service.dto.request.RegisterRequest;
@@ -15,10 +13,7 @@ import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.AuthResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
-import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlreadyInUseException;
-import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAndUsernameAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.RegistrationException;
-import com.thorekt.mdd.microservice.user_service.exception.registration.UsernameAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.service.AuthenticationService;
 import com.thorekt.mdd.microservice.user_service.service.RegistrationService;
 import com.thorekt.mdd.microservice.user_service.service.UserService;
@@ -53,7 +48,7 @@ public class AuthController {
 
         try {
             String token = authenticationService.authenticate(
-                    request.loginValue(),
+                    request.login(),
                     request.password());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
@@ -81,7 +76,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
         }
-
         return this.login(new LoginRequest(request.username(), request.password()));
     }
 

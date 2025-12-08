@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotBlank;
  * @author thorekt
  */
 public record LoginRequest(
-                @NotBlank String loginValue,
-                @NotBlank String password) {
+        @NotBlank String login,
+        @NotBlank String password) {
 
 }
