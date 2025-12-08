@@ -18,3 +18,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+security:
+  jwt:
+    public-key: classpath:jwt/public.pem
