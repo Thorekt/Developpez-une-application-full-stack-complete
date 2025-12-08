@@ -107,6 +107,9 @@ public class SecurityConfig {
 
     /**
      * Public endpoints: /auth/login, /auth/register, /actuator/**
+     * 
+     * @return SecurityFilterChain
+     * @throws Exception
      */
     @Bean
     @Order(1)
@@ -121,6 +124,9 @@ public class SecurityConfig {
 
     /**
      * Protected endpoints: everything else, including /auth/me
+     * 
+     * @return SecurityFilterChain
+     * @throws Exception
      */
     @Bean
     @Order(2)

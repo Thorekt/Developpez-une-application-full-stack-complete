@@ -2,6 +2,7 @@ package com.thorekt.mdd.microservice.article_service.config;
 
 import java.security.interfaces.RSAPublicKey;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,18 +33,38 @@ public class SecurityConfig {
     }
 
     /**
-     * Security filter chain configuration for all endpoints.
+     * Public endpoints: /actuator/**
      * 
      * @return SecurityFilterChain
+     * @throws Exception
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+    @Order(1)
+    public SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/actuator/**")
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+
+        return http.build();
+    }
+
+    /**
+     * Protected endpoints: everything else
+     * 
+     * @return SecurityFilterChain
+     * @throws Exception
+     */
+    @Bean
+    @Order(2)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> {
                 }));
+
         return http.build();
     }
 }
