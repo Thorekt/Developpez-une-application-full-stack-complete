@@ -10,29 +10,46 @@
     <packaging>pom</packaging>
     <name>microservices-parent</name>
 
+    <!-- ============================================================ -->
+    <!-- PROJECT PROPERTIES -->
+    <!-- ============================================================ -->
     <properties>
+        <!-- Encoding Configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+        <!-- Java Version Configuration -->
         <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
+        <!-- Spring Framework Versions -->
         <spring.boot.version>4.0.0</spring.boot.version>
         <spring.cloud.version>2025.1.0</spring.cloud.version>
 
+        <!-- Maven Plugin Versions -->
         <org.apache.maven-compiler.plugins.version>3.14.1</org.apache.maven-compiler.plugins.version>
         <org.apache.maven-surefire.plugins.version>3.5.4</org.apache.maven-surefire.plugins.version>
+
+        <!-- Annotation Processor Versions -->
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <org.projectlombok.version>1.18.42</org.projectlombok.version>
+
+        <!-- Testing Framework Versions -->
         <org.mockito.version>5.20.0</org.mockito.version>
         <org.mockito-inline.version>5.2.0</org.mockito-inline.version>
+
+        <!-- Code Coverage Versions -->
         <org.jacoco.version>0.8.14</org.jacoco.version>
     </properties>
 
+    <!-- ============================================================ -->
+    <!-- DEPENDENCY MANAGEMENT -->
+    <!-- Centralized dependency versions for all child modules -->
+    <!-- ============================================================ -->
     <dependencyManagement>
         <dependencies>
-
+            <!-- Spring Cloud Dependencies BOM (Bill of Materials) -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -41,6 +58,7 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- Spring Boot Dependencies BOM (Bill of Materials) -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -48,10 +66,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
+    <!-- ============================================================ -->
+    <!-- MODULES -->
+    <!-- Child modules that inherit from this parent POM -->
+    <!-- ============================================================ -->
     <modules>
         <module>api-gateway</module>
         <module>discovery-service</module>
@@ -61,10 +82,15 @@
         <module>article-service</module>
     </modules>
 
-
+    <!-- ============================================================ -->
+    <!-- BUILD CONFIGURATION -->
+    <!-- Common build plugins and configuration for all modules -->
+    <!-- ============================================================ -->
     <build>
         <pluginManagement>
             <plugins>
+                <!-- Maven Compiler Plugin -->
+                <!-- Configures Java compilation with Java 21 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -74,13 +100,16 @@
                     </configuration>
                 </plugin>
 
+                <!-- Spring Boot Maven Plugin -->
+                <!-- Enables building executable JAR/WAR files -->
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring.boot.version}</version>
                 </plugin>
 
-
+                <!-- Maven Dependency Plugin -->
+                <!-- Used to analyze project dependencies -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -92,17 +121,23 @@
                         </execution>
                     </executions>
                 </plugin>
+
+                <!-- Maven Surefire Plugin -->
+                <!-- Executes unit tests during Maven build -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${org.apache.maven-surefire.plugins.version}</version>
                 </plugin>
 
+                <!-- JaCoCo Maven Plugin -->
+                <!-- Generates code coverage reports for unit tests -->
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${org.jacoco.version}</version>
                     <executions>
+                        <!-- Prepares JaCoCo agent for code coverage analysis -->
                         <execution>
                             <id>prepare-agent</id>
                             <goals>
@@ -110,6 +145,7 @@
                             </goals>
                         </execution>
 
+                        <!-- Generates code coverage report -->
                         <execution>
                             <id>report</id>
                             <phase>verify</phase>
