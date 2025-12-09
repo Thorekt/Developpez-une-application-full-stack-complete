@@ -37,7 +37,7 @@ public class CommentService {
             throw new NotFoundException();
         }
 
-        return commentRepository.findAllByArticleUuidInOrderByCreatedAtDesc(articleUuid);
+        return commentRepository.findAllByArticle_UuidOrderByCreatedAtDesc(articleUuid);
     }
 
     /**

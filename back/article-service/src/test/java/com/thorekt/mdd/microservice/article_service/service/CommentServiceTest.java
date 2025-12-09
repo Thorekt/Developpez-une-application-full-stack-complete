@@ -63,7 +63,7 @@ public class CommentServiceTest {
         Mockito.when(mockArticleRepository.findByUuid(article.getUuid()))
                 .thenReturn(article);
 
-        Mockito.when(mockCommentRepository.findAllByArticleUuidInOrderByCreatedAtDesc(article.getUuid()))
+        Mockito.when(mockCommentRepository.findAllByArticle_UuidOrderByCreatedAtDesc(article.getUuid()))
                 .thenReturn(comments);
 
         // When
@@ -71,7 +71,7 @@ public class CommentServiceTest {
 
         // Then
         Mockito.verify(mockArticleRepository).findByUuid(article.getUuid());
-        Mockito.verify(mockCommentRepository).findAllByArticleUuidInOrderByCreatedAtDesc(article.getUuid());
+        Mockito.verify(mockCommentRepository).findAllByArticle_UuidOrderByCreatedAtDesc(article.getUuid());
         assertEquals(comments, result);
     }
 
