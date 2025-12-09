@@ -12,6 +12,7 @@ import com.thorekt.mdd.microservice.theme_service.dto.ThemeDto;
 import com.thorekt.mdd.microservice.theme_service.dto.request.SubscriptionRequest;
 import com.thorekt.mdd.microservice.theme_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.theme_service.dto.response.ErrorResponse;
+import com.thorekt.mdd.microservice.theme_service.dto.response.SuccessResponse;
 import com.thorekt.mdd.microservice.theme_service.dto.response.ThemeListResponse;
 import com.thorekt.mdd.microservice.theme_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.theme_service.mapper.ThemeMapper;
@@ -70,7 +71,7 @@ public class SubscriptionController {
         String userUuid = jwt.getClaimAsString("sub");
         try {
             subscriptionService.subscribeToTheme(userUuid, request.theme_uuid());
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(new SuccessResponse("SUBSCRIBE_SUCCESS"));
         } catch (NotFoundException e) {
             return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
         } catch (IllegalArgumentException e) {
@@ -89,7 +90,7 @@ public class SubscriptionController {
         String userUuid = jwt.getClaimAsString("sub");
         try {
             subscriptionService.unsubscribeFromTheme(userUuid, request.theme_uuid());
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(new SuccessResponse("UNSUBSCRIBE_SUCCESS"));
         } catch (NotFoundException e) {
             return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
         } catch (IllegalArgumentException e) {
