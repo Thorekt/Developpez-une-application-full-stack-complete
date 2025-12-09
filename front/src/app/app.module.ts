@@ -19,6 +19,8 @@ import { CommentFormComponent } from './components/article/comment-form/comment-
 import { ThemeCardComponent } from './components/theme/theme-card/theme-card.component';
 import { ThemeSubscriptionListComponent } from './components/theme/theme-subscription-list/theme-subscription-list.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './core/auth.interceptor';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, LoginComponent, RegisterComponent, FeedComponent, ArticleComponent, ThemeListComponent, NewArticleComponent, UserProfileComponent, ArticleCardComponent, CommentSectionComponent, CommentRowComponent, CommentFormComponent, ThemeCardComponent, ThemeSubscriptionListComponent, NavbarComponent],
@@ -28,7 +30,13 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     BrowserAnimationsModule,
     MatButtonModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
