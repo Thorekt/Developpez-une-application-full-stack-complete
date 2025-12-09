@@ -1,4 +1,5 @@
 <app-navbar></app-navbar>
+
 <div class="register-container">
 
     <button class="back-btn" (click)="goBack()">←</button>
@@ -7,19 +8,43 @@
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="form">
 
+        <!-- USERNAME -->
         <mat-form-field appearance="outline">
             <mat-label>Nom d'utilisateur</mat-label>
             <input matInput formControlName="username" />
+            <mat-error *ngIf="(form.controls['username'].touched || submitted)
+                               && form.controls['username'].hasError('required')">
+                Le nom d'utilisateur est obligatoire.
+            </mat-error>
         </mat-form-field>
 
+        <!-- EMAIL -->
         <mat-form-field appearance="outline">
             <mat-label>Adresse e-mail</mat-label>
             <input matInput type="email" formControlName="email" />
+            <mat-error *ngIf="(form.controls['email'].touched || submitted)
+                               && form.controls['email'].hasError('required')">
+                L'adresse e-mail est obligatoire.
+            </mat-error>
+            <mat-error *ngIf="(form.controls['email'].touched || submitted)
+                               && form.controls['email'].hasError('email')">
+                Adresse e-mail invalide.
+            </mat-error>
         </mat-form-field>
 
+        <!-- PASSWORD -->
         <mat-form-field appearance="outline">
             <mat-label>Mot de passe</mat-label>
             <input matInput type="password" formControlName="password" />
+            <mat-error *ngIf="(form.controls['password'].touched || submitted)
+                               && form.controls['password'].hasError('required')">
+                Le mot de passe est obligatoire.
+            </mat-error>
+            <mat-error *ngIf="(form.controls['password'].touched || submitted)
+                               && form.controls['password'].hasError('passwordInvalid')">
+                Le mot de passe doit contenir min. 8 caractères, une majuscule, une minuscule,
+                un chiffre et un caractère spécial.
+            </mat-error>
         </mat-form-field>
 
         <button mat-raised-button color="primary" class="submit-btn" type="submit">
