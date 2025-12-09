@@ -25,4 +25,8 @@ export class AuthService extends ApiService {
   me(): Observable<UserResponse> {
     return this.http.get<UserResponse>(`${this.baseUrl}${this.prefix}/me`);
   }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
 }
