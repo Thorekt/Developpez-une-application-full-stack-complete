@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.thorekt.mdd.microservice.article_service.dto.ArticleDto;
 import com.thorekt.mdd.microservice.article_service.dto.request.CreateArticleRequest;
@@ -110,10 +111,12 @@ public class ArticleControllerTest {
         String content = "Article content";
         CreateArticleRequest request = new CreateArticleRequest(themeUuid, title, content);
 
+        Jwt mockJwt = Mockito.mock(Jwt.class);
+        Mockito.when(mockJwt.getClaimAsString("sub")).thenReturn(userUuid);
         Mockito.doNothing().when(mockArticleService).createArticle(userUuid, themeUuid, title, content);
 
         // When
-        ResponseEntity<ApiResponse> response = classUnderTest.createArticle(userUuid, request);
+        ResponseEntity<ApiResponse> response = classUnderTest.createArticle(mockJwt, request);
 
         // Then
         assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
@@ -130,11 +133,13 @@ public class ArticleControllerTest {
         String content = "Article content";
         CreateArticleRequest request = new CreateArticleRequest(themeUuid, title, content);
 
+        Jwt mockJwt = Mockito.mock(Jwt.class);
+        Mockito.when(mockJwt.getClaimAsString("sub")).thenReturn(userUuid);
         Mockito.doThrow(new NotFoundException()).when(mockArticleService).createArticle(userUuid,
                 themeUuid, title, content);
 
         // When
-        ResponseEntity<ApiResponse> response = classUnderTest.createArticle(userUuid, request);
+        ResponseEntity<ApiResponse> response = classUnderTest.createArticle(mockJwt, request);
 
         // Then
         assertEquals(HttpStatusCode.valueOf(404), response.getStatusCode());
@@ -145,17 +150,19 @@ public class ArticleControllerTest {
     @Test
     public void createArticle_ShouldHandleIllegalArgumentException() {
         // Given
-        String userUuid = "invalid-uuid";
+        String userUuid = UUID.randomUUID().toString();
         String themeUuid = UUID.randomUUID().toString();
         String title = "New Article";
         String content = "Article content";
         CreateArticleRequest request = new CreateArticleRequest(themeUuid, title, content);
 
+        Jwt mockJwt = Mockito.mock(Jwt.class);
+        Mockito.when(mockJwt.getClaimAsString("sub")).thenReturn(userUuid);
         Mockito.doThrow(new IllegalArgumentException("Invalid UUID")).when(mockArticleService).createArticle(userUuid,
                 themeUuid, title, content);
 
         // When
-        ResponseEntity<ApiResponse> response = classUnderTest.createArticle(userUuid, request);
+        ResponseEntity<ApiResponse> response = classUnderTest.createArticle(mockJwt, request);
 
         // Then
         assertEquals(HttpStatusCode.valueOf(400), response.getStatusCode());
@@ -172,11 +179,13 @@ public class ArticleControllerTest {
         String content = "Article content";
         CreateArticleRequest request = new CreateArticleRequest(themeUuid, title, content);
 
+        Jwt mockJwt = Mockito.mock(Jwt.class);
+        Mockito.when(mockJwt.getClaimAsString("sub")).thenReturn(userUuid);
         Mockito.doThrow(new RuntimeException("Database error")).when(mockArticleService).createArticle(userUuid,
                 themeUuid, title, content);
 
         // When
-        ResponseEntity<ApiResponse> response = classUnderTest.createArticle(userUuid, request);
+        ResponseEntity<ApiResponse> response = classUnderTest.createArticle(mockJwt, request);
 
         // Then
         assertEquals(HttpStatusCode.valueOf(500), response.getStatusCode());
