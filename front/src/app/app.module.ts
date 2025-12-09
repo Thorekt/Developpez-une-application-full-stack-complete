@@ -13,7 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 // HTTP & Interceptors
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './core/auth.interceptor';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
