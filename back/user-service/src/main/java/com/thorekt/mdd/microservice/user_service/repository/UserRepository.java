@@ -2,7 +2,6 @@ package com.thorekt.mdd.microservice.user_service.repository;
 
 import java.util.UUID;
 
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties.Apiversion.Use;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

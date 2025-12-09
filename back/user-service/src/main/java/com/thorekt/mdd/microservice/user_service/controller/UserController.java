@@ -1,7 +1,5 @@
 package com.thorekt.mdd.microservice.user_service.controller;
 
-import java.util.logging.Logger;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;

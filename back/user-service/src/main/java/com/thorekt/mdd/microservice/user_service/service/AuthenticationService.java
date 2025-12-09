@@ -4,7 +4,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
-import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.model.User;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
