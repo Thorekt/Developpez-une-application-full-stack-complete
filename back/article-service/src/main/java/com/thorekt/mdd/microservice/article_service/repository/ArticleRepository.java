@@ -39,19 +39,19 @@ public interface ArticleRepository extends CrudRepository<Article, UUID> {
     List<Article> findAllByOrderByCreatedAtAsc();
 
     /**
-     * Find all articles by theme UUID ordered by creation date descending
+     * Find all articles by theme UUIDs ordered by creation date descending
      * 
-     * @param themeUuid UUID of the theme
+     * @param themeUuids List of UUIDs of the themes
      * @return List of Article entities
      */
-    List<Article> findByThemeUuidOrderByCreatedAtDesc(UUID themeUuid);
+    List<Article> findByThemeUuidInOrderByCreatedAtDesc(List<UUID> themeUuids);
 
     /**
      * Find all articles by theme UUID ordered by creation date ascending
      * 
-     * @param themeUuid UUID of the theme
+     * @param themeUuids List of UUIDs of the themes
      * @return List of Article entities
      */
-    List<Article> findByThemeUuidOrderByCreatedAtAsc(UUID themeUuid);
+    List<Article> findByThemeUuidInOrderByCreatedAtAsc(List<UUID> themeUuids);
 
 }
