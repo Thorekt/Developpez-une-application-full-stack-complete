@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.thorekt.mdd.microservice.user_service.dto.UserDto;
 import com.thorekt.mdd.microservice.user_service.dto.request.UpdateRequest;
 import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.SuccessResponse;
 import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
+import com.thorekt.mdd.microservice.user_service.model.User;
 import com.thorekt.mdd.microservice.user_service.service.UserService;
 
 import jakarta.validation.Valid;
@@ -45,8 +47,8 @@ public class UserController {
     @GetMapping("/{uuid}")
     public ResponseEntity<ApiResponse> findByUuid(@PathVariable("uuid") @Valid String uuid) {
         try {
-            var user = userService.findByUuid(uuid);
-            var userDto = userMapper.toDto(user);
+            User user = userService.findByUuid(uuid);
+            UserDto userDto = userMapper.toDto(user);
             return ResponseEntity.ok(userDto);
         } catch (NotFoundException e) {
             return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));

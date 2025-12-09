@@ -1,7 +1,5 @@
 package com.thorekt.mdd.microservice.user_service.controller;
 
-import java.util.logging.Logger;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.thorekt.mdd.microservice.user_service.dto.UserDto;
 import com.thorekt.mdd.microservice.user_service.dto.request.LoginRequest;
 import com.thorekt.mdd.microservice.user_service.dto.request.RegisterRequest;
 import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
@@ -28,7 +27,6 @@ import com.thorekt.mdd.microservice.user_service.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for authentication and registration operations
@@ -101,8 +99,8 @@ public class AuthController {
         String uuid = jwt.getClaimAsString("sub");
 
         try {
-            var user = userService.findByUuid(uuid);
-            var userDto = userMapper.toDto(user);
+            User user = userService.findByUuid(uuid);
+            UserDto userDto = userMapper.toDto(user);
             return ResponseEntity.ok(userDto);
         } catch (NotFoundException e) {
             return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
