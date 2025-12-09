@@ -47,6 +47,9 @@
             </mat-error>
         </mat-form-field>
 
+        <div *ngIf="serverError" class="server-error">
+            {{ serverError }}
+        </div>
         <button mat-raised-button color="primary" class="submit-btn" type="submit">
             S'inscrire
         </button>

@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { RegisterRequest } from 'src/app/core/models/requests/register-request.model';
+import { AuthResponse } from 'src/app/core/models/responses/auth-response.model';
+import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 
 @Component({
   selector: 'app-register',
@@ -11,8 +15,13 @@ export class RegisterComponent {
 
   form: FormGroup;
   submitted = false;
+  serverError: string | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -30,9 +39,9 @@ export class RegisterComponent {
     const hasDigit = /[0-9]/.test(value);
     const hasSpecial = /[^A-Za-z0-9]/.test(value);
 
-    const isValid = hasMinLength && hasUpper && hasLower && hasDigit && hasSpecial;
-
-    return isValid ? null : { passwordInvalid: true };
+    return hasMinLength && hasUpper && hasLower && hasDigit && hasSpecial
+      ? null
+      : { passwordInvalid: true };
   }
 
   goBack() {
@@ -41,12 +50,34 @@ export class RegisterComponent {
 
   submit() {
     this.submitted = true;
+    this.serverError = null;
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    console.log('Form valid:', this.form.value);
+    const payload: RegisterRequest = this.form.value;
+
+    this.authService.register(payload).subscribe({
+      next: (response) => {
+        // SUCCESS ?
+        if ('token' in response) {
+          // Stocker le token pour persister la session
+          localStorage.setItem('token', response.token);
+
+          // Rediriger l'utilisateur
+          this.router.navigate(['/']);
+        } else {
+          // Cas improbable où success != AuthResponse
+          this.serverError = 'Une erreur inattendue est survenue.';
+        }
+      },
+      error: (err) => {
+        // Erreur HTTP (ex: 400, 409, 500)
+        const apiError: ErrorResponse = err.error;
+        this.serverError = apiError?.error || 'Erreur lors de l’inscription.';
+      }
+    });
   }
 }
