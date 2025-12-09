@@ -30,7 +30,7 @@ public interface CommentRepository extends CrudRepository<Comment, UUID> {
      * @param articleUuid UUID of the article
      * @return List of Comment entities
      */
-    List<Comment> findAllByArticleUuid(UUID articleUuid);
+    List<Comment> findAllByArticleUuidInOrderByCreatedAtDesc(UUID articleUuid);
 
     /**
      * Find a comment by UUID of the user
