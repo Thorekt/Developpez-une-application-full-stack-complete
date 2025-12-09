@@ -1,7 +1,12 @@
-.center {
+.container {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.btn-group {
+  display: flex;
+  gap: 100px;
 }
