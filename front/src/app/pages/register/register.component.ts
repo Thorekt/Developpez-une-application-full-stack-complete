@@ -61,20 +61,15 @@ export class RegisterComponent {
 
     this.authService.register(payload).subscribe({
       next: (response) => {
-        // SUCCESS ?
         if ('token' in response) {
-          // Stocker le token pour persister la session
-          localStorage.setItem('token', response.token);
+          this.authService.saveToken(response.token);
 
-          // Rediriger l'utilisateur
-          this.router.navigate(['/']);
+          this.router.navigate(['/feed']);
         } else {
-          // Cas improbable où success != AuthResponse
           this.serverError = 'Une erreur inattendue est survenue.';
         }
       },
       error: (err) => {
-        // Erreur HTTP (ex: 400, 409, 500)
         const apiError: ErrorResponse = err.error;
         this.serverError = apiError?.error || 'Erreur lors de l’inscription.';
       }

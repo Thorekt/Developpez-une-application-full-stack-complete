@@ -29,4 +29,12 @@ export class AuthService extends ApiService {
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
+
+  saveToken(token: string): void {
+    localStorage.setItem('token', token);
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+  }
 }

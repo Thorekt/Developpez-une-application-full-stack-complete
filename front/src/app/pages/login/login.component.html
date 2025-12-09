@@ -1,1 +1,38 @@
-<p>login works!</p>
+<app-navbar></app-navbar>
+
+<div class="login-container">
+
+    <button class="back-btn" (click)="goBack()">←</button>
+
+    <h2>Connexion</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+
+        <!-- USERNAME -->
+        <mat-form-field appearance="outline">
+            <mat-label>E-mail ou nom d’utilisateur</mat-label>
+            <input matInput formControlName="login" />
+            <mat-error *ngIf="(form.controls['login'].touched || submitted)
+                               && form.controls['login'].hasError('required')">
+                L'e-mail ou le nom d’utilisateur est obligatoire.
+            </mat-error>
+        </mat-form-field>
+
+        <!-- PASSWORD -->
+        <mat-form-field appearance="outline">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput type="password" formControlName="password" />
+            <mat-error *ngIf="(form.controls['password'].touched || submitted)
+                               && form.controls['password'].hasError('required')">
+                Le mot de passe est obligatoire.
+            </mat-error>
+        </mat-form-field>
+
+        <div *ngIf="serverError" class="server-error">
+            {{ serverError }}
+        </div>
+        <button mat-raised-button color="primary" class="submit-btn" type="submit">
+            Se connecter
+        </button>
+
+    </form>
+</div>
