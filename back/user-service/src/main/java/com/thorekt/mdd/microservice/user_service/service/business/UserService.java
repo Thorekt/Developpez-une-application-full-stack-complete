@@ -1,4 +1,4 @@
-package com.thorekt.mdd.microservice.user_service.service;
+package com.thorekt.mdd.microservice.user_service.service.business;
 
 import java.util.UUID;
 

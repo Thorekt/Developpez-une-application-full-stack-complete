@@ -1,10 +1,14 @@
-package com.thorekt.mdd.microservice.user_service.service;
+package com.thorekt.mdd.microservice.user_service.service.security;
 
+import org.aspectj.weaver.patterns.IToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
 import com.thorekt.mdd.microservice.user_service.model.User;
+import com.thorekt.mdd.microservice.user_service.service.business.UserService;
+import com.thorekt.mdd.microservice.user_service.service.security.token.ITokenGeneratorService;
+import com.thorekt.mdd.microservice.user_service.service.security.token.JWTGeneratorService;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationService {
 
     // Used for JWT generation
-    private final JWTService jwtService;
+    private final ITokenGeneratorService tokenGeneratorService;
 
     // Used for user management
     private final UserService userService;
@@ -41,7 +45,7 @@ public class AuthenticationService {
             throw new BadCredentialsException();
         }
 
-        String jwt = jwtService.generateToken(authentication, user.getUuid());
+        String jwt = tokenGeneratorService.generateToken(authentication, user.getUuid());
         return jwt;
     }
 

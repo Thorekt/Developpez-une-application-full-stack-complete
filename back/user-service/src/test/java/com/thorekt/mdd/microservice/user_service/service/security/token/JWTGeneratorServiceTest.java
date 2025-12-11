@@ -1,4 +1,4 @@
-package com.thorekt.mdd.microservice.user_service.service;
+package com.thorekt.mdd.microservice.user_service.service.security.token;
 
 import java.time.Instant;
 import java.util.Map;
@@ -21,7 +21,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
-public class JWTServiceTest {
+public class JWTGeneratorServiceTest {
 
     @Mock
     JwtEncoder mockJwtEncoder;
@@ -29,11 +29,11 @@ public class JWTServiceTest {
     @Mock
     Authentication mockAuthentication;
 
-    JWTService classUnderTest;
+    JWTGeneratorService classUnderTest;
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new JWTService(mockJwtEncoder);
+        classUnderTest = new JWTGeneratorService(mockJwtEncoder);
 
         ReflectionTestUtils.setField(classUnderTest, "issuer", "test-issuer");
         ReflectionTestUtils.setField(classUnderTest, "expiresIn", 3600L);

@@ -1,4 +1,4 @@
-package com.thorekt.mdd.microservice.user_service.service;
+package com.thorekt.mdd.microservice.user_service.service.security.token;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class JWTService {
+public class JWTGeneratorService implements ITokenGeneratorService {
 
     private final JwtEncoder jwtEncoder;
 

@@ -1,4 +1,4 @@
-package com.thorekt.mdd.microservice.user_service.service;
+package com.thorekt.mdd.microservice.user_service.service.business;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,6 +14,7 @@ import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlr
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAndUsernameAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.UsernameAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
+import com.thorekt.mdd.microservice.user_service.service.business.RegistrationService;
 
 @ExtendWith(MockitoExtension.class)
 public class RegistrationServiceTest {

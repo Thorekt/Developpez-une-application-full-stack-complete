@@ -25,9 +25,9 @@ import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
 import com.thorekt.mdd.microservice.user_service.model.User;
-import com.thorekt.mdd.microservice.user_service.service.AuthenticationService;
-import com.thorekt.mdd.microservice.user_service.service.RegistrationService;
-import com.thorekt.mdd.microservice.user_service.service.UserService;
+import com.thorekt.mdd.microservice.user_service.service.business.RegistrationService;
+import com.thorekt.mdd.microservice.user_service.service.business.UserService;
+import com.thorekt.mdd.microservice.user_service.service.security.AuthenticationService;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {

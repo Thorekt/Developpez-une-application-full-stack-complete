@@ -1,4 +1,4 @@
-package com.thorekt.mdd.microservice.user_service.service;
+package com.thorekt.mdd.microservice.user_service.service.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.thorekt.mdd.microservice.user_service.model.User;
 import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
+import com.thorekt.mdd.microservice.user_service.service.security.CustomUserDetailsService;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomUserDetailsServiceTest {

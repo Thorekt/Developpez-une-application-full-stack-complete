@@ -1,4 +1,4 @@
-package com.thorekt.mdd.microservice.user_service.service;
+package com.thorekt.mdd.microservice.user_service.service.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,12 +17,14 @@ import org.springframework.security.core.Authentication;
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
 import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.model.User;
+import com.thorekt.mdd.microservice.user_service.service.business.UserService;
+import com.thorekt.mdd.microservice.user_service.service.security.token.ITokenGeneratorService;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthenticationServiceTest {
 
     @Mock
-    JWTService mockJwtService;
+    ITokenGeneratorService mockTokenGeneratorService;
 
     @Mock
     AuthenticationManager mockAuthenticationManager;
@@ -37,7 +39,8 @@ public class AuthenticationServiceTest {
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new AuthenticationService(mockJwtService, mockUserService, mockAuthenticationManager);
+        classUnderTest = new AuthenticationService(mockTokenGeneratorService, mockUserService,
+                mockAuthenticationManager);
 
     }
 
@@ -59,7 +62,7 @@ public class AuthenticationServiceTest {
         Mockito.when(mockAuthenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(mockAuthentication);
 
-        Mockito.when(mockJwtService.generateToken(mockAuthentication, userUUID))
+        Mockito.when(mockTokenGeneratorService.generateToken(mockAuthentication, userUUID))
                 .thenReturn(fakeJwt);
         // When
         String jwt = classUnderTest.authenticate(userNameString, "plain-password");
@@ -67,7 +70,7 @@ public class AuthenticationServiceTest {
         // Then
         Mockito.verify(mockUserService).findByEmailOrUsername(userNameString);
         Mockito.verify(mockAuthenticationManager).authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class));
-        Mockito.verify(mockJwtService).generateToken(mockAuthentication, userUUID);
+        Mockito.verify(mockTokenGeneratorService).generateToken(mockAuthentication, userUUID);
         assertEquals(fakeJwt, jwt);
     }
 
@@ -91,7 +94,7 @@ public class AuthenticationServiceTest {
         assertEquals(null, jwt);
         Mockito.verify(mockUserService).findByEmailOrUsername(userNameString);
         Mockito.verifyNoInteractions(mockAuthenticationManager);
-        Mockito.verifyNoInteractions(mockJwtService);
+        Mockito.verifyNoInteractions(mockTokenGeneratorService);
     }
 
     @Test
@@ -122,7 +125,7 @@ public class AuthenticationServiceTest {
         assertEquals(null, jwt);
         Mockito.verify(mockUserService).findByEmailOrUsername(userNameString);
         Mockito.verify(mockAuthenticationManager).authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class));
-        Mockito.verifyNoInteractions(mockJwtService);
+        Mockito.verifyNoInteractions(mockTokenGeneratorService);
 
     }
 

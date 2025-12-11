@@ -22,7 +22,7 @@ import com.thorekt.mdd.microservice.user_service.dto.response.SuccessResponse;
 import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
 import com.thorekt.mdd.microservice.user_service.model.User;
-import com.thorekt.mdd.microservice.user_service.service.UserService;
+import com.thorekt.mdd.microservice.user_service.service.business.UserService;
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
