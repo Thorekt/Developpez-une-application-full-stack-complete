@@ -10,11 +10,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.thorekt.mdd.microservice.user_service.exception.BadRequestException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAndUsernameAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.UsernameAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
-import com.thorekt.mdd.microservice.user_service.service.business.RegistrationService;
+import com.thorekt.mdd.microservice.user_service.service.business.password.IPasswordValidatorService;
 
 @ExtendWith(MockitoExtension.class)
 public class RegistrationServiceTest {
@@ -25,11 +26,14 @@ public class RegistrationServiceTest {
     @Mock
     private PasswordEncoder mockPasswordEncoder;
 
+    @Mock
+    private IPasswordValidatorService mockPasswordValidator;
+
     RegistrationService classUnderTest;
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new RegistrationService(mockUserRepository, mockPasswordEncoder);
+        classUnderTest = new RegistrationService(mockUserRepository, mockPasswordValidator, mockPasswordEncoder);
     }
 
     @Test
@@ -44,6 +48,7 @@ public class RegistrationServiceTest {
         Mockito.when(mockUserRepository.existsByUsername(username)).thenReturn(false);
         Mockito.when(mockPasswordEncoder.encode(rawPassword)).thenReturn(encodedPassword);
         Mockito.when(mockUserRepository.save(Mockito.any())).thenAnswer(i -> i.getArguments()[0]);
+        Mockito.when(mockPasswordValidator.isValid(rawPassword)).thenReturn(true);
 
         // When
         try {
@@ -57,6 +62,7 @@ public class RegistrationServiceTest {
         Mockito.verify(mockUserRepository).existsByUsername(username);
         Mockito.verify(mockPasswordEncoder).encode(rawPassword);
         Mockito.verify(mockUserRepository).save(Mockito.any());
+        Mockito.verify(mockPasswordValidator).isValid(rawPassword);
     }
 
     @Test
@@ -79,6 +85,9 @@ public class RegistrationServiceTest {
 
         Mockito.verify(mockUserRepository).existsByEmail(email);
         Mockito.verify(mockUserRepository).existsByUsername(username);
+        Mockito.verifyNoInteractions(mockPasswordEncoder);
+        Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verifyNoInteractions(mockPasswordValidator);
     }
 
     @Test
@@ -101,6 +110,9 @@ public class RegistrationServiceTest {
 
         Mockito.verify(mockUserRepository).existsByEmail(email);
         Mockito.verify(mockUserRepository).existsByUsername(username);
+        Mockito.verifyNoInteractions(mockPasswordEncoder);
+        Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verifyNoInteractions(mockPasswordValidator);
     }
 
     @Test
@@ -123,6 +135,36 @@ public class RegistrationServiceTest {
 
         Mockito.verify(mockUserRepository).existsByEmail(email);
         Mockito.verify(mockUserRepository).existsByUsername(username);
+        Mockito.verifyNoInteractions(mockPasswordEncoder);
+        Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verifyNoInteractions(mockPasswordValidator);
 
+    }
+
+    @Test
+    void testRegisterUser_ShouldThrowBadRequestException_ForInvalidPassword() {
+        // Given
+        String email = "test@example.com";
+        String username = "testuser";
+        String rawPassword = "password123";
+        String encodedPassword = "encodedPassword123";
+
+        Mockito.when(mockUserRepository.existsByEmail(email)).thenReturn(false);
+        Mockito.when(mockUserRepository.existsByUsername(username)).thenReturn(false);
+        Mockito.when(mockPasswordValidator.isValid(rawPassword)).thenReturn(false);
+
+        // When / Then
+        try {
+            classUnderTest.registerUser(email, username, rawPassword);
+            assert false : "BadRequestException should have been thrown";
+        } catch (Exception e) {
+            assertEquals(BadRequestException.class, e.getClass());
+        }
+
+        Mockito.verify(mockUserRepository).existsByEmail(email);
+        Mockito.verify(mockUserRepository).existsByUsername(username);
+        Mockito.verify(mockPasswordValidator).isValid(rawPassword);
+        Mockito.verifyNoInteractions(mockPasswordEncoder);
+        Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
     }
 }

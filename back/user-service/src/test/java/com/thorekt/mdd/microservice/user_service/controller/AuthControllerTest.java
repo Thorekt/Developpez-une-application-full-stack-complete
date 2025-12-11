@@ -21,6 +21,7 @@ import com.thorekt.mdd.microservice.user_service.dto.response.ApiResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.AuthResponse;
 import com.thorekt.mdd.microservice.user_service.dto.response.ErrorResponse;
 import com.thorekt.mdd.microservice.user_service.exception.BadCredentialsException;
+import com.thorekt.mdd.microservice.user_service.exception.BadRequestException;
 import com.thorekt.mdd.microservice.user_service.exception.NotFoundException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.mapper.UserMapper;
@@ -142,6 +143,23 @@ public class AuthControllerTest {
         Mockito.verify(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
         Mockito.verifyNoInteractions(mockAuthenticationService);
 
+    }
+
+    @Test
+    public void register_ShouldReturnABadRequestResponse_WhenBadRequestExceptionIsThrown() {
+        // Given
+        RegisterRequest request = new RegisterRequest("username", "email@example.com", "password");
+        BadRequestException badRequestException = new BadRequestException();
+        Mockito.doThrow(new BadRequestException())
+                .when(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
+
+        // When
+        ResponseEntity<ApiResponse> response = classUnderTest.register(request);
+        // Then
+        assertEquals(HttpStatusCode.valueOf(400), response.getStatusCode());
+        assertEquals(badRequestException.getMessage(), ((ErrorResponse) response.getBody()).error());
+        Mockito.verify(mockRegistrationService).registerUser(request.email(), request.username(), request.password());
+        Mockito.verifyNoInteractions(mockAuthenticationService);
     }
 
     @Test

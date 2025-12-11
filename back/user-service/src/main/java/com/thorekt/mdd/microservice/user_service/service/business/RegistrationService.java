@@ -7,8 +7,10 @@ import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAlr
 import com.thorekt.mdd.microservice.user_service.exception.registration.EmailAndUsernameAlreadyInUseException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.RegistrationException;
 import com.thorekt.mdd.microservice.user_service.exception.registration.UsernameAlreadyInUseException;
+import com.thorekt.mdd.microservice.user_service.exception.BadRequestException;
 import com.thorekt.mdd.microservice.user_service.model.User;
 import com.thorekt.mdd.microservice.user_service.repository.UserRepository;
+import com.thorekt.mdd.microservice.user_service.service.business.password.IPasswordValidatorService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Email;
@@ -25,6 +27,8 @@ public class RegistrationService {
 
     private final UserRepository userRepository;
 
+    private final IPasswordValidatorService passwordValidator;
+
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -36,7 +40,8 @@ public class RegistrationService {
      * @throws Exception
      */
     @Transactional
-    public void registerUser(@Email String email, String username, String rawPassword) throws RegistrationException {
+    public void registerUser(@Email String email, String username, String rawPassword)
+            throws RegistrationException, BadRequestException {
         boolean emailExists = userRepository.existsByEmail(email);
         boolean usernameExists = userRepository.existsByUsername(username);
         if (emailExists && usernameExists) {
@@ -45,6 +50,10 @@ public class RegistrationService {
             throw new EmailAlreadyInUseException();
         } else if (usernameExists) {
             throw new UsernameAlreadyInUseException();
+        }
+
+        if (!passwordValidator.isValid(rawPassword)) {
+            throw new BadRequestException();
         }
 
         User newUser = User.builder()
