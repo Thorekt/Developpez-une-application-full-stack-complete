@@ -70,7 +70,7 @@ public class SubscriptionController {
             @RequestBody SubscriptionRequest request) {
         String userUuid = jwt.getClaimAsString("sub");
         try {
-            subscriptionService.subscribeToTheme(userUuid, request.theme_uuid());
+            subscriptionService.subscribeToTheme(userUuid, request.themeUuid());
             return ResponseEntity.ok().body(new SuccessResponse("SUBSCRIBE_SUCCESS"));
         } catch (NotFoundException e) {
             return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
@@ -89,7 +89,7 @@ public class SubscriptionController {
             @RequestBody SubscriptionRequest request) {
         String userUuid = jwt.getClaimAsString("sub");
         try {
-            subscriptionService.unsubscribeFromTheme(userUuid, request.theme_uuid());
+            subscriptionService.unsubscribeFromTheme(userUuid, request.themeUuid());
             return ResponseEntity.ok().body(new SuccessResponse("UNSUBSCRIBE_SUCCESS"));
         } catch (NotFoundException e) {
             return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
