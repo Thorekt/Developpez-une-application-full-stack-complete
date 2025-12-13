@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
+import { ApiService } from '../api.service';
 import { Observable } from 'rxjs';
-import { RegisterRequest } from '../models/requests/register-request.model';
-import { AuthResponse } from '../models/responses/user/auth-response.model';
-import { LoginRequest } from '../models/requests/login-request.model';
-import { UserResponse } from '../models/responses/user/user-response.model';
-import { ErrorResponse } from '../models/responses/error-response.model';
+import { RegisterRequest } from '../../models/requests/user/register-request.model';
+import { AuthResponse } from '../../models/responses/user/auth-response.model';
+import { LoginRequest } from '../../models/requests/user/login-request.model';
+import { UserResponse } from '../../models/responses/user/user-response.model';
+import { ErrorResponse } from '../../models/responses/error-response.model';
 
 @Injectable({
   providedIn: 'root'

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/core/services/auth.service';
-import { LoginRequest } from 'src/app/core/models/requests/login-request.model';
+import { AuthService } from 'src/app/core/services/user/auth.service';
+import { LoginRequest } from 'src/app/core/models/requests/user/login-request.model';
 import { AuthResponse } from 'src/app/core/models/responses/user/auth-response.model';
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 
