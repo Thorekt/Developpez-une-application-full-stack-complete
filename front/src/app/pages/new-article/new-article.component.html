@@ -1,3 +1,41 @@
 <app-navbar></app-navbar>
 
-<p>new-article works!</p>
+<div class="container new-article-container">
+    <div class="new-article-header">
+        <h2>Créer un nouvel article</h2>
+    </div>
+
+    <div class="new-article-form">
+        <form [formGroup]="form" (ngSubmit)="submitArticle()" class="form">
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Sélectionner un thème</mat-label>
+                <select matNativeControl formControlName="themeUuid" required name="theme">
+                    <option *ngFor="let theme of themes" [value]="theme.uuid">
+                        {{ theme.title }}
+                    </option>
+                </select>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Titre de l’article</mat-label>
+                <input matInput formControlName="title" required name="title">
+                <mat-error
+                    *ngIf="form.controls['title']?.invalid && (form.controls['title']?.dirty || form.controls['title']?.touched)">
+                    Le titre est requis.
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Contenu de l'article</mat-label>
+                <textarea matInput formControlName="content" required name="content" rows="10"></textarea>
+                <mat-error
+                    *ngIf="form.controls['content']?.invalid && (form.controls['content']?.dirty || form.controls['content']?.touched)">
+                    Le contenu est requis.
+                </mat-error>
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Publier
+                l'article
+            </button>
+
+        </form>
+    </div>
