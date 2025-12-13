@@ -1,1 +1,14 @@
-<p>theme-card works!</p>
+<div class="card theme-card">
+    <div class="card-header">
+        <h3>{{ theme.title }}</h3>
+    </div>
+    <div class="card-body">
+        <p>{{ theme.description }}</p>
+    </div>
+    <div class="card-footer">
+        <button mat-raised-button color="primary" (click)="subscribe()" [disabled]="isSubscribed">
+            {{ isSubscribed ? 'Déjà abonné' : 'S\'abonner' }}
+        </button>
+        <div *ngIf="error" class="error-message">{{ error }}</div>
+    </div>
+</div>
