@@ -1,7 +1,7 @@
 import { OrderType } from "src/app/core/type/order.type";
 
 
-export interface ArticleLlistByThemeUuidsInOrder {
+export interface ArticleListByThemeUuidsInOrder {
     themeUuids: string[];
     order: OrderType;
 }

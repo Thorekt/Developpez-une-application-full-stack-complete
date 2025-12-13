@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api.service';
-import { ArticleLlistByThemeUuidsInOrder } from '../../models/requests/theme/article-list-by-theme-uiids-in-order.model';
+import { ArticleListByThemeUuidsInOrder } from '../../models/requests/theme/article-list-by-theme-uiids-in-order.model';
 import { Observable } from 'rxjs';
 import { ArticleListResponse } from '../../models/responses/article/article-list-response.model';
 import { ErrorResponse } from '../../models/responses/error-response.model';
@@ -17,7 +17,7 @@ export class ArticleService extends ApiService {
 
   private prefix = '/article';
 
-  getArticlesByThemeUuidsInOrder(data: ArticleLlistByThemeUuidsInOrder): Observable<ArticleListResponse | ErrorResponse> {
+  getArticlesByThemeUuidsInOrder(data: ArticleListByThemeUuidsInOrder): Observable<ArticleListResponse | ErrorResponse> {
     const themeUuids: string = data.themeUuids.join(',');
     const order: string = data.order;
     return this.http.get<ArticleListResponse | ErrorResponse>(`${this.baseUrl}${this.prefix}/?theme_uuids=${themeUuids}&order=${order}`);

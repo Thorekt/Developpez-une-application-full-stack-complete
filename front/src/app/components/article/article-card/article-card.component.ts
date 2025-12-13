@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ArticleResponse } from 'src/app/core/models/responses/article/article-response.model';
 
 @Component({
   selector: 'app-article-card',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./article-card.component.scss']
 })
 export class ArticleCardComponent implements OnInit {
+  @Input() article!: ArticleResponse;
 
   constructor() { }
 
