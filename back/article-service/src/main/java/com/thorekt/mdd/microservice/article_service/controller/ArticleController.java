@@ -2,6 +2,7 @@ package com.thorekt.mdd.microservice.article_service.controller;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -106,6 +107,7 @@ public class ArticleController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(new ErrorResponse("INVALID_FORMAT"));
         } catch (Exception e) {
+            Logger.getLogger(ArticleController.class.getName()).severe(e.getMessage());
             return ResponseEntity.status(500).body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
         }
     }

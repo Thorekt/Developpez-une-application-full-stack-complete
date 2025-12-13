@@ -1,5 +1,6 @@
 package com.thorekt.mdd.microservice.article_service.dto;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import com.thorekt.mdd.microservice.article_service.dto.response.ApiResponse;
@@ -27,5 +28,5 @@ public class ArticleDto implements ApiResponse {
     private UUID themeUuid;
 
     @NonNull
-    private String createdAt;
+    private Instant createdAt;
 }

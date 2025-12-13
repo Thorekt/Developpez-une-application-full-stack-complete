@@ -1,5 +1,6 @@
 package com.thorekt.mdd.microservice.article_service.model;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -56,5 +57,5 @@ public class Article {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private String createdAt;
+    private Instant createdAt;
 }

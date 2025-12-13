@@ -1,5 +1,6 @@
 package com.thorekt.mdd.microservice.article_service.dto;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,6 +28,6 @@ public class CommentDto implements ApiResponse {
     private UUID userUuid;
 
     @NonNull
-    private String createdAt;
+    private Instant createdAt;
 
 }
