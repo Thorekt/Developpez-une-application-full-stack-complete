@@ -72,7 +72,7 @@ public class ArticleController {
         try {
             Article article = articleService.findArticleByUuid(uuid);
             ArticleDto articleDto = articleMapper.toDto(article);
-            return ResponseEntity.ok(new ArticleListResponse(List.of(articleDto)));
+            return ResponseEntity.ok(articleDto);
         } catch (NotFoundException e) {
             return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
         } catch (IllegalArgumentException e) {

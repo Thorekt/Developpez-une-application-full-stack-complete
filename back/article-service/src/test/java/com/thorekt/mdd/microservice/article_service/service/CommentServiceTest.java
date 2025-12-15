@@ -2,6 +2,7 @@ package com.thorekt.mdd.microservice.article_service.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,14 +51,14 @@ public class CommentServiceTest {
                         .article(article)
                         .userUuid(UUID.randomUUID())
                         .content("This is a test comment")
-                        .createdAt("2024-01-01T00:00:00Z")
+                        .createdAt(Instant.parse("2025-01-01T00:00:00Z"))
                         .build(),
                 Comment.builder()
                         .uuid(UUID.randomUUID())
                         .article(article)
                         .userUuid(UUID.randomUUID())
                         .content("This is another test comment")
-                        .createdAt("2024-01-02T00:00:00Z")
+                        .createdAt(Instant.parse("2025-01-02T00:00:00Z"))
                         .build());
 
         Mockito.when(mockArticleRepository.findByUuid(article.getUuid()))
