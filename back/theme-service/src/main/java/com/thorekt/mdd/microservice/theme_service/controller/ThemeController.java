@@ -1,6 +1,7 @@
 package com.thorekt.mdd.microservice.theme_service.controller;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -56,7 +57,7 @@ public class ThemeController {
      * @return Theme entity
      */
     @GetMapping("/{uuid}")
-    public ResponseEntity<ApiResponse> findThemeByUuid(@PathVariable String uuid) {
+    public ResponseEntity<ApiResponse> findThemeByUuid(@PathVariable("uuid") String uuid) {
         try {
             Theme theme = themeService.findByUuid(uuid);
             ThemeDto themeDto = themeMapper.toDto(theme);

@@ -1,1 +1,8 @@
-<p>comment-row works!</p>
+<div *ngIf="comment" class="comment-row">
+    <div class="comment-header">
+        <span class="comment-author">{{ userName }}</span>
+    </div>
+    <div class="comment-content">
+        {{ comment.content }}
+    </div>
+</div>

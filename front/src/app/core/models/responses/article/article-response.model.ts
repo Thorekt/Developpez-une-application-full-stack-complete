@@ -3,5 +3,6 @@ export interface ArticleResponse {
     title: string;
     content: string;
     userUuid: string;
+    themeUuid: string;
     createdAt: string;
 }

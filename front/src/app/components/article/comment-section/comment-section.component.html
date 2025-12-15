@@ -1,1 +1,7 @@
-<p>comment-section works!</p>
+<div>
+    <div class="comments-list">
+        <app-comment-row *ngFor="let comment of comments" [comment]="comment">
+        </app-comment-row>
+    </div>
+    <app-comment-form [articleUuid]="articleUuid"></app-comment-form>
+</div>
