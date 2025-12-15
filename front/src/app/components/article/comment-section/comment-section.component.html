@@ -3,5 +3,5 @@
         <app-comment-row *ngFor="let comment of comments" [comment]="comment">
         </app-comment-row>
     </div>
-    <app-comment-form [articleUuid]="articleUuid"></app-comment-form>
+    <app-comment-form [articleUuid]="articleUuid" (commentCreated)="fetchComments()"></app-comment-form>
 </div>

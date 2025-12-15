@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CreateCommentRequest } from 'src/app/core/models/requests/article/create-comment-request.model';
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
@@ -12,6 +12,8 @@ import { ArticleService } from 'src/app/core/services/article/article.service';
 })
 export class CommentFormComponent implements OnInit {
   @Input() articleUuid?: string;
+
+  @Output() commentCreated = new EventEmitter<void>();
 
   form: FormGroup;
 
@@ -46,7 +48,7 @@ export class CommentFormComponent implements OnInit {
     this.articleService.createComment(data).subscribe({
       next: (response: SuccessResponse | ErrorResponse) => {
         if ('message' in response) {
-          //emit event to parent component to reload comments
+          this.commentCreated.emit();
         } else {
           this.error = response.error || 'An error occurred while submitting the comment.';
         }

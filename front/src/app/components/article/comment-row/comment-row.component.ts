@@ -21,6 +21,7 @@ export class CommentRowComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.fetchUserName();
   }
 
   fetchUserName(): void {
