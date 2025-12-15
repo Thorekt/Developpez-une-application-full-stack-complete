@@ -1,1 +1,13 @@
-<p>article-card works!</p>
+<div class="card article-card">
+    <header class="card-header">
+        <h2 class="article-title">{{ article.title }}</h2>
+        <div class="article-meta">
+            <span class="article-date">{{ article.createdAt | date:'medium' }}</span>
+            <span class="article-author">{{ user?.username }}</span>
+        </div>
+    </header>
+
+    <div class="card-body">
+        <p class="article-content">{{ article.content }}</p>
+    </div>
+</div>

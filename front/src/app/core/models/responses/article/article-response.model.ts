@@ -1,8 +1,7 @@
 export interface ArticleResponse {
     uuid: string;
-    ticle: string;
+    title: string;
     content: string;
     userUuid: string;
     createdAt: string;
-    updatedAt: string;
 }
