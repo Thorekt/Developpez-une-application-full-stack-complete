@@ -19,12 +19,15 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ThemeService {
+    /**
+     * Theme repository.
+     */
     private final ThemeRepository themeRepository;
 
     /**
      * Find all themes
      * 
-     * @return
+     * @return List of Theme entities
      */
     public List<Theme> findAllThemes() {
         return themeRepository.findAll();

@@ -7,6 +7,11 @@ import com.thorekt.mdd.microservice.article_service.dto.response.ApiResponse;
 
 import lombok.*;
 
+/**
+ * Data Transfer Object for Article.
+ * 
+ * @author Thorekt
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

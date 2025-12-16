@@ -27,8 +27,8 @@ public class SubscriptionService {
     /**
      * Create a subscription for a user to a theme
      * 
-     * @param userUuid  UUID of the user
-     * @param themeUuid UUID of the theme
+     * @param userUuidString  UUID of the user
+     * @param themeUuidString UUID of the theme
      */
     public void subscribeToTheme(String userUuidString, String themeUuidString) {
         Theme theme = themeRepository.findByUuid(UUID.fromString(themeUuidString));
@@ -46,8 +46,8 @@ public class SubscriptionService {
     /**
      * Remove a subscription for a user to a theme
      * 
-     * @param userUuid  UUID of the user
-     * @param themeUuid UUID of the theme
+     * @param userUuidString  UUID of the user
+     * @param themeUuidString UUID of the theme
      */
     public void unsubscribeFromTheme(String userUuidString, String themeUuidString) {
         UUID userUuid = UUID.fromString(userUuidString);

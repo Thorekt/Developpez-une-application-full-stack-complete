@@ -29,7 +29,7 @@ public class UserService {
      * 
      * @param emailOrUsername Email or username of the user
      * @return the found User
-     * @throws NotFoundException
+     * @throws NotFoundException if user not found
      */
     public User findByEmailOrUsername(String emailOrUsername) throws NotFoundException {
         User user = userRepository.findByEmailOrUsername(emailOrUsername, emailOrUsername);
@@ -44,7 +44,7 @@ public class UserService {
      * 
      * @param uuid UUID of the user
      * @return the found User
-     * @throws NotFoundException
+     * @throws NotFoundException if user not found
      */
     public User findByUuid(String uuid) throws NotFoundException {
         User user = userRepository.findByUuid(UUID.fromString(uuid));
@@ -54,6 +54,15 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Update user details
+     * 
+     * @param uuid     UUID of the user
+     * @param email    New email
+     * @param username New username
+     * @param password New password
+     * @throws NotFoundException if user not found
+     */
     @Transactional
     public void updateUser(String uuid, @Email String email, String username, String password)
             throws NotFoundException {

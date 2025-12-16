@@ -14,6 +14,11 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Security configuration for the Article Service
+ * 
+ * @author thorekt
+ */
 @Configuration
 @org.springframework.context.annotation.Profile("!test")
 public class SecurityConfig {
@@ -25,7 +30,7 @@ public class SecurityConfig {
      * JWT decoder bean using RSA public key.
      * 
      * @return JwtDecoder
-     * @throws Exception
+     * @throws Exception When key conversion fails
      */
     @Bean
     public JwtDecoder jwtDecoder() throws Exception {
@@ -36,8 +41,9 @@ public class SecurityConfig {
     /**
      * Public endpoints: /actuator/**
      * 
+     * @param http HttpSecurity instance
      * @return SecurityFilterChain
-     * @throws Exception
+     * @throws Exception if security configuration fails
      */
     @Bean
     @Order(1)
@@ -53,8 +59,9 @@ public class SecurityConfig {
     /**
      * Protected endpoints: everything else
      * 
+     * @param http HttpSecurity instance
      * @return SecurityFilterChain
-     * @throws Exception
+     * @throws Exception if security configuration fails
      */
     @Bean
     @Order(2)

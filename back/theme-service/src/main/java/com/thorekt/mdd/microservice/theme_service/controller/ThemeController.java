@@ -29,12 +29,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/theme")
 public class ThemeController {
+    /**
+     * Theme service.
+     */
     private final ThemeService themeService;
 
+    /**
+     * Theme mapper.
+     */
     private final ThemeMapper themeMapper;
 
     /**
      * Find all themes.
+     * 
+     * @return List of Theme entities
      */
     @GetMapping("/")
     public ResponseEntity<ApiResponse> findAllThemes() {

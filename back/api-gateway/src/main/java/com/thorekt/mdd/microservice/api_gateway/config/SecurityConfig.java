@@ -9,10 +9,21 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+/**
+ * Security configuration for the API Gateway
+ * 
+ * @author Thorekt
+ */
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+    /**
+     * Configures the security web filter chain.
+     * 
+     * @param http ServerHttpSecurity instance
+     * @return SecurityWebFilterChain
+     */
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
@@ -21,6 +32,11 @@ public class SecurityConfig {
                 .build();
     }
 
+    /**
+     * Configures CORS settings for the API Gateway.
+     * 
+     * @return CorsWebFilter
+     */
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();

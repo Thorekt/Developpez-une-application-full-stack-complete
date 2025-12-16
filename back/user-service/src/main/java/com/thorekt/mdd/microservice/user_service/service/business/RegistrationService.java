@@ -34,10 +34,11 @@ public class RegistrationService {
     /**
      * Register a new user
      * 
-     * @param email
-     * @param rawPassword
-     * @param name
-     * @throws Exception
+     * @param email       Email of the new user
+     * @param username    Username of the new user
+     * @param rawPassword Raw password of the new user
+     * @throws RegistrationException if email or username is already in use
+     * @throws BadRequestException   if password is invalid
      */
     @Transactional
     public void registerUser(@Email String email, String username, String rawPassword)

@@ -30,15 +30,29 @@ import lombok.RequiredArgsConstructor;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
+/**
+ * Security configuration for the User Service
+ * 
+ * @author thorekt
+ */
 @Configuration
 @org.springframework.context.annotation.Profile("!test")
 @RequiredArgsConstructor
 public class SecurityConfig {
+    /**
+     * Custom user details service.
+     */
     private final CustomUserDetailsService userDetailsService;
 
+    /**
+     * RSA private key resource.
+     */
     @Value("${security.jwt.private-key}")
     private Resource privateKeyResource;
 
+    /**
+     * RSA public key resource.
+     */
     @Value("${security.jwt.public-key}")
     private Resource publicKeyResource;
 
@@ -56,7 +70,7 @@ public class SecurityConfig {
      * JWT encoder bean using RSA keys.
      * 
      * @return JwtEncoder
-     * @throws Exception
+     * @throws Exception When key conversion fails
      */
     @Bean
     public JwtEncoder jwtEncoder() throws Exception {
@@ -71,7 +85,7 @@ public class SecurityConfig {
      * JWT decoder bean using RSA public key.
      * 
      * @return JwtDecoder
-     * @throws Exception
+     * @throws Exception When key conversion fails
      */
     @Bean
     public JwtDecoder jwtDecoder() throws Exception {
@@ -82,7 +96,7 @@ public class SecurityConfig {
     /**
      * Authentication provider bean using DaoAuthenticationProvider with custom
      * 
-     * @param encoder
+     * @param encoder PasswordEncoder
      * @return AuthenticationProvider
      */
     @Bean
@@ -97,9 +111,9 @@ public class SecurityConfig {
     /**
      * Authentication manager bean.
      * 
-     * @param config
+     * @param config AuthenticationConfiguration
      * @return AuthenticationManager
-     * @throws Exception
+     * @throws Exception When authentication manager retrieval fails
      */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -109,8 +123,9 @@ public class SecurityConfig {
     /**
      * Public endpoints: /auth/login, /auth/register, /actuator/**
      * 
+     * @param http HttpSecurity instance for configuring security
      * @return SecurityFilterChain
-     * @throws Exception
+     * @throws Exception When security configuration fails
      */
     @Bean
     @Order(1)
@@ -126,8 +141,9 @@ public class SecurityConfig {
     /**
      * Protected endpoints: everything else, including /auth/me
      * 
+     * @param http HttpSecurity instance for configuring security
      * @return SecurityFilterChain
-     * @throws Exception
+     * @throws Exception When security configuration fails
      */
     @Bean
     @Order(2)

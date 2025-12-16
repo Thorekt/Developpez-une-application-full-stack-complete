@@ -16,6 +16,13 @@ public class PasswordValidatorService implements IPasswordValidatorService {
     @Value("${password.policy.max-length:64}")
     int maxLength = 64;
 
+    /**
+     * Validate the given password against defined criteria
+     * 
+     * @param password Password to validate
+     * @return true if the password is valid, false otherwise
+     */
+    @Override
     public boolean isValid(String password) {
         if (password.length() < minLength || password.length() > maxLength) {
             return false;

@@ -32,7 +32,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
+    /**
+     * User service.
+     */
     private final UserService userService;
+
+    /**
+     * User mapper.
+     */
     private final UserMapper userMapper;
 
     /**
@@ -40,7 +47,7 @@ public class UserController {
      * 
      * @param uuid UUID of the user
      * @return UserDto of the found user
-     * @throws NotFoundException
+     * @throws NotFoundException if user not found
      */
     @GetMapping("/{uuid}")
     public ResponseEntity<ApiResponse> findByUuid(@PathVariable("uuid") @Valid String uuid) {
@@ -57,6 +64,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Update user details
+     * 
+     * @param jwt           JWT token containing user information
+     * @param updateRequest UpdateRequest containing new user details
+     * @return SuccessResponse if update is successful
+     */
     @PutMapping("/")
     public ResponseEntity<ApiResponse> updateUser(@AuthenticationPrincipal Jwt jwt,
             @RequestBody UpdateRequest updateRequest) {

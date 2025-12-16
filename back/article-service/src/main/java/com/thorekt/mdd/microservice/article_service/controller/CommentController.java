@@ -28,12 +28,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+/**
+ * Controller for managing comments.
+ * 
+ * @author Thorekt
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/article")
 public class CommentController {
+    /**
+     * Comment service.
+     */
     public final CommentService commentService;
 
+    /**
+     * Comment mapper.
+     */
     public final CommentMapper commentMapper;
 
     /**
@@ -64,8 +75,8 @@ public class CommentController {
     /**
      * Create a new comment for an article
      * 
-     * @param JWT                  authenticated user
-     * @param CreateCommentRequest request body
+     * @param jwt                  authenticated user
+     * @param createCommentRequest request body
      * @return ResponseEntity with status
      */
     @PostMapping("/comment")

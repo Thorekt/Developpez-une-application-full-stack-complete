@@ -41,13 +41,22 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @ToString
 public class Theme {
+    /**
+     * UUID of the theme.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
+    /**
+     * Title of the theme.
+     */
     @NonNull
     private String title;
 
+    /**
+     * Description of the theme.
+     */
     @Column(columnDefinition = "TEXT")
     @NonNull
     private String description;

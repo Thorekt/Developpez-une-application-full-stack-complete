@@ -30,12 +30,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+/**
+ * Controller for managing articles.
+ * 
+ * @author Thorekt
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/article")
 public class ArticleController {
+    /**
+     * Article service.
+     */
     private final ArticleService articleService;
 
+    /**
+     * Article mapper.
+     */
     private final ArticleMapper articleMapper;
 
     /**
@@ -85,7 +96,7 @@ public class ArticleController {
     /**
      * Create a new article.
      * 
-     * @param userUuid             UUID of the user
+     * @param jwt                  Authenticated user's JWT token
      * @param createArticleRequest Request body containing themeUuid, title, and
      *                             content
      * @return ResponseEntity indicating the result of the operation

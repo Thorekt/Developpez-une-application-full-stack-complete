@@ -9,6 +9,11 @@ import com.thorekt.mdd.microservice.article_service.model.Article;
 
 import lombok.*;
 
+/**
+ * Data Transfer Object for Comment.
+ * 
+ * @author Thorekt
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

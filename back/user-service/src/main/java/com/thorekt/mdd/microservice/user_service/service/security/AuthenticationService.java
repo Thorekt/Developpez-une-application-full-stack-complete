@@ -33,6 +33,14 @@ public class AuthenticationService {
     // Used for authentication management
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Authenticate a user and generate a JWT token
+     * 
+     * @param emailOrUsername Email or username of the user
+     * @param password        Password of the user
+     * @return JWT token if authentication is successful
+     * @throws BadCredentialsException if authentication fails
+     */
     public String authenticate(String emailOrUsername, String password) throws BadCredentialsException {
         User user;
         Authentication authentication;

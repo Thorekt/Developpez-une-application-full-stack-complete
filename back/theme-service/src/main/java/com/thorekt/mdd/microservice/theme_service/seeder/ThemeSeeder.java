@@ -10,15 +10,34 @@ import org.springframework.stereotype.Component;
 import com.thorekt.mdd.microservice.theme_service.model.Theme;
 import com.thorekt.mdd.microservice.theme_service.repository.ThemeRepository;
 
+/**
+ * Seeder for populating the database with initial themes.
+ * 
+ * @author Thorekt
+ */
 @Component
 public class ThemeSeeder implements CommandLineRunner {
 
+        /**
+         * Theme repository.
+         */
         private final ThemeRepository themeRepository;
 
+        /**
+         * Constructor for ThemeSeeder.
+         * 
+         * @param themeRepository Theme repository
+         */
         public ThemeSeeder(ThemeRepository themeRepository) {
                 this.themeRepository = themeRepository;
         }
 
+        /**
+         * Run method to seed the database.
+         * 
+         * @param args Command line arguments
+         * @throws Exception if an error occurs
+         */
         @Override
         public void run(String... args) throws Exception {
 

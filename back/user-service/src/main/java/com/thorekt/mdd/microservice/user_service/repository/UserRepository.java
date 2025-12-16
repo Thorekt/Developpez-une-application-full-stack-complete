@@ -51,16 +51,16 @@ public interface UserRepository extends CrudRepository<User, UUID> {
     /**
      * Check if a user exists by email
      * 
-     * @param email
-     * @return
+     * @param email Email of the user
+     * @return true if exists, false otherwise
      */
     boolean existsByEmail(String email);
 
     /**
      * Check if a user exists by username
      * 
-     * @param username
-     * @return
+     * @param username Username of the user
+     * @return true if exists, false otherwise
      */
     boolean existsByUsername(String username);
 }

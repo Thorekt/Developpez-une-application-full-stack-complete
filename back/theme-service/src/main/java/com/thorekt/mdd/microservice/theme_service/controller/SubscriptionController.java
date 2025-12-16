@@ -35,12 +35,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 @RequestMapping("/theme/subscription")
 public class SubscriptionController {
+    /**
+     * Subscription service.
+     */
     private final SubscriptionService subscriptionService;
 
+    /**
+     * Theme mapper.
+     */
     private final ThemeMapper themeMapper;
 
     /**
      * Find all theme susbscribed by the user.
+     * 
+     * @param jwt authenticated user
+     * @return List of Theme entities
      */
     @GetMapping("/")
     public ResponseEntity<ApiResponse> findAllSubscribedThemes(@AuthenticationPrincipal Jwt jwt) {
@@ -64,6 +73,10 @@ public class SubscriptionController {
 
     /**
      * Subscribe the user to a theme.
+     * 
+     * @param jwt     authenticated user
+     * @param request subscription request containing theme UUID
+     * @return ResponseEntity with success or error message
      */
     @PostMapping("/")
     public ResponseEntity<ApiResponse> subscribeToTheme(@AuthenticationPrincipal Jwt jwt,
@@ -83,6 +96,10 @@ public class SubscriptionController {
 
     /**
      * Unsubscribe the user from a theme.
+     * 
+     * @param jwt     Authenticated user's JWT token
+     * @param request Unsubscription request containing theme UUID
+     * @return ResponseEntity with success or error message
      */
     @DeleteMapping("/")
     public ResponseEntity<ApiResponse> unsubscribeFromTheme(@AuthenticationPrincipal Jwt jwt,

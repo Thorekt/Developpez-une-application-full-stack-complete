@@ -37,8 +37,8 @@ public class JWTGeneratorService implements ITokenGeneratorService {
     /**
      * Generate a JWT token for the given authentication
      * 
-     * @param userUUID UUID of the user
-     * @param username Username of the user
+     * @param authentication Authentication object
+     * @param userUUID       UUID of the user
      * @return JWT token
      */
     public String generateToken(Authentication authentication, UUID userUUID) {

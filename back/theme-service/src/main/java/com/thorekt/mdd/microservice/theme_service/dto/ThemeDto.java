@@ -5,6 +5,11 @@ import java.util.UUID;
 import com.thorekt.mdd.microservice.theme_service.dto.response.ApiResponse;
 import lombok.*;
 
+/**
+ * Data Transfer Object for Theme
+ * 
+ * @author thorekt
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

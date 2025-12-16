@@ -21,8 +21,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+    /**
+     * Comment repository.
+     */
     private final CommentRepository commentRepository;
 
+    /**
+     * Article repository.
+     */
     private final ArticleRepository articleRepository;
 
     /**

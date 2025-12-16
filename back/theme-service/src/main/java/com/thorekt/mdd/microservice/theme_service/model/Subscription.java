@@ -37,14 +37,23 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @ToString
 public class Subscription {
+    /**
+     * UUID of the subscription.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
+    /**
+     * Theme associated with the subscription.
+     */
     @ManyToOne(optional = false)
     @JoinColumn(name = "theme_uuid", nullable = false)
     private Theme theme;
 
+    /**
+     * User UUID associated with the subscription.
+     */
     @Column(name = "user_uuid", nullable = false)
     private UUID userUuid;
 }

@@ -5,13 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 /**
  * Request DTO for login
  * 
- * @param loginValue User login value (email or username)
- * @param password   User password
+ * @param login    User login value (email or username)
+ * @param password User password
  * 
  * @author thorekt
  */
 public record LoginRequest(
-        @NotBlank String login,
-        @NotBlank String password) {
+                @NotBlank String login,
+                @NotBlank String password) {
 
 }

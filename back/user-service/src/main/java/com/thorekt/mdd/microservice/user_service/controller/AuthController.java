@@ -39,18 +39,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class AuthController {
 
+    /**
+     * Authentication service.
+     */
     private final AuthenticationService authenticationService;
 
+    /**
+     * Registration service.
+     */
     private final RegistrationService registrationService;
 
+    /**
+     * User service.
+     */
     private final UserService userService;
 
+    /**
+     * User mapper.
+     */
     private final UserMapper userMapper;
 
     /**
      * Login a user
      * 
-     * @param request
+     * @param request LoginRequest containing login and password
      * @return AuthResponse with JWT token if successful
      */
     @PostMapping("/login")
@@ -73,7 +85,7 @@ public class AuthController {
     /**
      * Register a new user
      * 
-     * @param request
+     * @param request RegisterRequest containing email, username, and password
      * @return AuthResponse with JWT token if successful
      */
     @PostMapping("/register")
@@ -94,7 +106,7 @@ public class AuthController {
     /**
      * Get the current authenticated user's details
      * 
-     * @param user uuid
+     * @param jwt JWT token containing user information
      * @return User details
      */
     @GetMapping("/me")

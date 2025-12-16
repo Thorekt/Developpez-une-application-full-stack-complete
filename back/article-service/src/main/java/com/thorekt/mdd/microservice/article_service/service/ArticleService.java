@@ -20,13 +20,16 @@ import utils.OrderEnum;
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
+    /**
+     * Article repository.
+     */
     private final ArticleRepository articleRepository;
 
     /**
      * Find all articles ordered by creation date
      * 
-     * @param thmeUuids List of UUIDs of the themes
-     * @param order     OrderEnum indicating ascending or descending order
+     * @param themeUuids List of UUIDs of the themes
+     * @param order      OrderEnum indicating ascending or descending order
      * @return List of Article entities
      */
     public List<Article> findAllArticlesByThemesUuidsInOrder(List<UUID> themeUuids, OrderEnum order) {
