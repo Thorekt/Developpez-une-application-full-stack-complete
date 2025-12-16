@@ -1,5 +1,13 @@
 import { AbstractControl, ValidationErrors } from "@angular/forms";
 
+/**
+ * Validates that a password meets the required complexity
+ * 
+ * @param control The form control containing the password to validate.
+ * @returns ValidationErrors | null Returns null if the password is valid, otherwise returns an object with the 'passwordInvalid' key set to true.
+ * 
+ * @author Thorekt
+ */
 export function passwordValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (!value) return null;

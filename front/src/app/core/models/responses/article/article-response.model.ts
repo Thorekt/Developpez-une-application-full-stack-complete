@@ -1,3 +1,8 @@
+/**
+ * ArticleResponse represents article information.
+ * 
+ * @author Thorekt
+ */
 export interface ArticleResponse {
     uuid: string;
     title: string;

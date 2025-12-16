@@ -5,6 +5,14 @@ import { UserResponse } from '../../models/responses/user/user-response.model';
 import { ErrorResponse } from '../../models/responses/error-response.model';
 import { SuccessResponse } from '../../models/responses/success-response.model';
 
+/**
+ * UserService handles user-related operations such as fetching and updating user information.
+ * 
+ * @extends ApiService
+ * @providedIn root
+ * 
+ * @author Thorekt
+ */
 @Injectable({
   providedIn: 'root'
 })

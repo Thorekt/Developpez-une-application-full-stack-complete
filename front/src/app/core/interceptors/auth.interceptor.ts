@@ -4,11 +4,31 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { AuthService } from '../services/user/auth.service';
 import { Router } from '@angular/router';
 
+/**
+ * AuthInterceptor intercepts HTTP requests to add authentication tokens and handle unauthorized responses.
+ * 
+ * @implements HttpInterceptor
+ * 
+ * @author Thorekt
+ */
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
+  /**
+   * Constructs an instance of AuthInterceptor.
+   * 
+   * @param authService AuthService for managing authentication state.
+   * @param router Router for navigation.
+   */
   constructor(private authService: AuthService, private router: Router) { }
 
+  /**
+   * Intercepts HTTP requests to add authentication tokens and handle unauthorized responses.
+   * 
+   * @param req HttpRequest<any> to be intercepted.
+   * @param next HttpHandler to handle the request.
+   * @returns Observable<HttpEvent<any>> representing the HTTP event stream.
+   */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     const noAuthEndpoints = [
