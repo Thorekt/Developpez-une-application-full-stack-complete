@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/core/services/user/auth.service';
 import { RegisterRequest } from 'src/app/core/models/requests/user/register-request.model';
 import { AuthResponse } from 'src/app/core/models/responses/user/auth-response.model';
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
+import { passwordValidator } from 'src/app/core/validators/password.validator';
 
 @Component({
   selector: 'app-register',
@@ -25,24 +26,10 @@ export class RegisterComponent {
     this.form = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, this.passwordValidator]]
+      password: ['', [Validators.required, passwordValidator]]
     });
   }
 
-  passwordValidator(control: AbstractControl): ValidationErrors | null {
-    const value = control.value;
-    if (!value) return null;
-
-    const hasMinLength = value.length >= 8;
-    const hasUpper = /[A-Z]/.test(value);
-    const hasLower = /[a-z]/.test(value);
-    const hasDigit = /[0-9]/.test(value);
-    const hasSpecial = /[^A-Za-z0-9]/.test(value);
-
-    return hasMinLength && hasUpper && hasLower && hasDigit && hasSpecial
-      ? null
-      : { passwordInvalid: true };
-  }
 
   goBack() {
     this.router.navigate(['/']);
