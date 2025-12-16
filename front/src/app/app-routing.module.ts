@@ -28,6 +28,12 @@ const routes: Routes = [
   { path: '**', redirectTo: '' }
 ];
 
+/**
+ * AppRoutingModule handles the routing configuration for the application.
+ * It manages guest-only routes, authenticated routes, and provides fallback routing.
+ * 
+ * @author Thorekt
+ */
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],

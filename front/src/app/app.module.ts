@@ -39,6 +39,12 @@ import { CommentFormComponent } from './components/article/comment-form/comment-
 import { ThemeCardComponent } from './components/theme/theme-card/theme-card.component';
 import { ThemeSubscriptionListComponent } from './components/theme/theme-subscription-list/theme-subscription-list.component';
 
+/**
+ * AppModule represents the root module of the Angular application.
+ * It declares all components and imports all necessary modules for the application.
+ * 
+ * @author Thorekt
+ */
 @NgModule({
   declarations: [AppComponent, HomeComponent, LoginComponent, RegisterComponent, FeedComponent, ArticleComponent, ThemeListComponent, NewArticleComponent, UserProfileComponent, ArticleCardComponent, CommentSectionComponent, CommentRowComponent, CommentFormComponent, ThemeCardComponent, ThemeSubscriptionListComponent, NavbarComponent],
   imports: [

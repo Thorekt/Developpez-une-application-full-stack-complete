@@ -8,6 +8,10 @@ import { ArticleService } from 'src/app/core/services/article/article.service';
 
 /**
  * CommentFormComponent represents a form for submitting comments on an article.
+ * 
+ * @implements OnInit, OnDestroy
+ * 
+ * @author Thorekt
  */
 @Component({
   selector: 'app-comment-form',
@@ -56,7 +60,7 @@ export class CommentFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Submits the comment form. 
+   * Submits the comment form and creates a new comment.
    */
   submit(): void {
     this.submitting = true;
@@ -87,8 +91,5 @@ export class CommentFormComponent implements OnInit, OnDestroy {
         this.submitting = false;
       }
     });
-
-
-
   }
 }

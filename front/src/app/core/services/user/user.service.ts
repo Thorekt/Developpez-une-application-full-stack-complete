@@ -20,10 +20,22 @@ export class UserService extends ApiService {
 
   private prefix = '/user';
 
+  /**
+   * Fetches user information by UUID.
+   * 
+   * @param userUuid string representing the UUID of the user to be fetched.
+   * @returns Observable<UserResponse | ErrorResponse> containing the user information or an error response.
+   */
   getUserByUuid(userUuid: string): Observable<UserResponse | ErrorResponse> {
     return this.http.get<UserResponse | ErrorResponse>(`${this.baseUrl}${this.prefix}/${userUuid}`);
   }
 
+  /**
+   * Updates the current user's information.
+   * 
+   * @param data object containing the updated user information.
+   * @returns Observable<SuccessResponse | ErrorResponse> indicating the success or failure of the update operation.
+   */
   updateUser(data: any): Observable<SuccessResponse | ErrorResponse> {
     return this.http.put<SuccessResponse | ErrorResponse>(`${this.baseUrl}${this.prefix}/`, data);
   }
