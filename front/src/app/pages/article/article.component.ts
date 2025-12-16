@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ArticleResponse } from 'src/app/core/models/responses/article/article-response.model';
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 import { ThemeResponse } from 'src/app/core/models/responses/theme/theme-response.model';
@@ -8,24 +9,44 @@ import { ArticleService } from 'src/app/core/services/article/article.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { UserService } from 'src/app/core/services/user/user.service';
 
+/**
+ * Component for displaying an article along with its associated user and theme information.
+ * @component ArticleComponent
+ * @implements OnInit, OnDestroy
+ * @description This component fetches and displays an article based on the UUID provided in the route parameters.
+ * It also retrieves the associated user and theme details for the article.
+ * 
+ * @author Thorekt
+ */
 @Component({
   selector: 'app-article',
   templateUrl: './article.component.html',
   styleUrls: ['./article.component.scss']
 })
-export class ArticleComponent implements OnInit {
-  articleUuid: string | null = null;
-  article: ArticleResponse | null = null;
+export class ArticleComponent implements OnInit, OnDestroy {
+  articleUuid?: string;
+  article?: ArticleResponse;
   loadingArticle: boolean = true;
+  articleServiceSubscription?: Subscription;
 
-  user: UserResponse | null = null;
+  user?: UserResponse;
   loadingUser: boolean = true;
+  userServiceSubscription?: Subscription;
 
-  theme: ThemeResponse | null = null;
+  theme?: ThemeResponse;
   loadingTheme: boolean = true;
+  themeServiceSubscription?: Subscription;
 
-  error: string | null = null;
+  error?: string;
 
+  /**
+   * Constructor for ArticleComponent.
+   * 
+   * @param articleService 
+   * @param themeService 
+   * @param userService 
+   * @param route 
+   */
   constructor(
     private articleService: ArticleService,
     private themeService: ThemeService,
@@ -33,8 +54,11 @@ export class ArticleComponent implements OnInit {
     private route: ActivatedRoute
   ) { }
 
+  /**
+   * Initializes the component by fetching the article based on the UUID from the route parameters.
+   */
   ngOnInit(): void {
-    this.articleUuid = this.route.snapshot.paramMap.get('uuid');
+    this.articleUuid = this.route.snapshot.paramMap.get('uuid') ?? undefined;
     if (this.articleUuid) {
       this.fetchArticle();
     } else {
@@ -42,9 +66,21 @@ export class ArticleComponent implements OnInit {
     }
   }
 
+  /**
+   * Cleans up subscriptions when the component is destroyed.
+   */
+  ngOnDestroy(): void {
+    this.userServiceSubscription?.unsubscribe();
+    this.articleServiceSubscription?.unsubscribe();
+    this.themeServiceSubscription?.unsubscribe();
+  }
+
+  /**
+   * Fetches the article using the ArticleService.
+   */
   fetchArticle(): void {
     this.loadingArticle = true;
-    this.articleService.getArticleByUuid(this.articleUuid!)
+    this.articleServiceSubscription = this.articleService.getArticleByUuid(this.articleUuid!)
       .subscribe({
         next: (data: ArticleResponse | ErrorResponse) => {
           if ('uuid' in data) {
@@ -63,15 +99,18 @@ export class ArticleComponent implements OnInit {
       });
   }
 
+  /**
+   * Fetches the user associated with the article using the UserService.
+   */
   fetchUser() {
     this.loadingUser = true;
-    this.userService.getUserByUuid(this.article!.userUuid)
+    this.userServiceSubscription = this.userService.getUserByUuid(this.article!.userUuid)
       .subscribe({
         next: (data: UserResponse | ErrorResponse) => {
           if ('uuid' in data) {
             this.user = data as UserResponse;
           } else {
-            this.error = (data as ErrorResponse).error || 'An error occurred while fetching the user.';
+            this.error += (data as ErrorResponse).error || 'An error occurred while fetching the user.';
           }
           this.loadingUser = false;
         },
@@ -82,15 +121,18 @@ export class ArticleComponent implements OnInit {
       });
   }
 
+  /**
+   * Fetches the theme associated with the article using the ThemeService.
+   */
   fetchTheme() {
     this.loadingTheme = true;
-    this.themeService.getThemeByUuid(this.article!.themeUuid)
+    this.themeServiceSubscription = this.themeService.getThemeByUuid(this.article!.themeUuid)
       .subscribe({
         next: (data: ThemeResponse | ErrorResponse) => {
           if ('uuid' in data) {
             this.theme = data;
           } else {
-            this.error = (data as ErrorResponse).error || 'An error occurred while fetching the theme.';
+            this.error += (data as ErrorResponse).error || 'An error occurred while fetching the theme.';
           }
           this.loadingTheme = false;
         },

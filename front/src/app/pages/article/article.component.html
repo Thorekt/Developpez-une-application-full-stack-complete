@@ -8,13 +8,13 @@
     </div>
     <div *ngIf="!loadingArticle && article">
         <header class="article-header">
-            <h1 class="article-page-title">{{ article?.title }}</h1>
+            <h1 class="article-page-title">{{ article.title }}</h1>
             <div class="article-meta">
                 <span>{{article.createdAt| date:'medium'}}</span>
                 <span *ngIf="loadingUser">Loading author...</span>
-                <span *ngIf="!loadingUser && user">{{ user?.username }}</span>
+                <span *ngIf="!loadingUser && user">{{ user.username }}</span>
                 <span *ngIf="loadingTheme">Loading theme...</span>
-                <span *ngIf="!loadingTheme && theme">{{ theme?.title }}</span>
+                <span *ngIf="!loadingTheme && theme">{{ theme.title }}</span>
             </div>
         </header>
         <article class="article-content" [innerHTML]="article.content"></article>
