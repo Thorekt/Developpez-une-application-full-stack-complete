@@ -4,8 +4,10 @@
 
     <button class="back-btn" (click)="goBack()">←</button>
 
-    <h2>Connexion</h2>
-    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+    <img class="logo" src="/assets/logo_p6.png" alt="logo" />
+
+    <h2>Se connecter</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form auth-form">
 
         <!-- USERNAME -->
         <mat-form-field appearance="outline">

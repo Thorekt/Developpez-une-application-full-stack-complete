@@ -19,3 +19,66 @@ body {
     align-items: center;
     padding: 20px;
 }
+
+.back-btn {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    font-size: 50px;
+    cursor: pointer;
+}
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 10px;
+    width: 250px;
+}
+
+.submit-btn {
+    width: 150px;
+    margin: 0 auto;
+    background-color: #7b5cf0 !important;
+    color: white !important;
+}
+
+.server-error {
+    color: #d32f2f;
+    margin-bottom: 10px;
+}
+
+
+@media screen and (min-width: 425px) {
+    .back-btn {
+        position: relative;
+        left: 20px;
+        top: 10px;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .back-btn {
+        font-size: 40px;
+        left: 10px;
+        top: 5px;
+    }
+}
+
+
+@media screen and (max-width: 350px) {
+    .back-btn {
+        font-size: 30px;
+        left: 5px;
+        top: 0px;
+    }
+}
