@@ -69,7 +69,6 @@
 }
 
 .burger-btn {
-    display: none;
     background: none;
     border: none;
     cursor: pointer;
@@ -140,13 +139,16 @@
     pointer-events: all;
 }
 
+@media screen and (min-width: 600px) {
+    .burger-btn {
+        display: none;
+    }
+}
+
+
 @media screen and (max-width: 600px) {
     .right-section {
         display: none;
-    }
-
-    .burger-btn {
-        display: block;
     }
 
     .navbar {

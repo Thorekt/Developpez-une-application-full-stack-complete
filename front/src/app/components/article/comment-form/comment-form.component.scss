@@ -1,18 +1,16 @@
 .comment-form {
-    width: 100%;
     max-width: 900px;
-    margin: 16px 30px;
+    margin: 16px 30px 16px 30px;
 }
 
 .comment-input-wrapper {
     display: flex;
     align-items: center;
     gap: 16px;
-    width: 100%;
 }
 
 .comment-input-field {
-    flex: 1;
+    flex-grow: 1;
 }
 
 .comment-input-field textarea {
@@ -24,10 +22,12 @@
     border: none;
     background: transparent !important;
     padding: 0;
+    width: fit-content;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+
 }
 
 .submit-btn img {
@@ -37,11 +37,7 @@
 
 @media (max-width: 600px) {
     .comment-form {
-        margin: 16px 0;
-    }
-
-    .comment-input-wrapper {
-        align-items: flex-end;
+        margin: 16px 10px 16px 10px;
     }
 
     .comment-input-field textarea {

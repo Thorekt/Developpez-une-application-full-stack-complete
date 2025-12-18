@@ -38,6 +38,18 @@
 }
 
 @media (max-width: 600px) {
+
+    .article {
+        margin-left: 10px;
+        margin-right: 10px;
+
+        .article-header {
+            .article-page-title {
+                margin-left: 60px;
+            }
+        }
+    }
+
     .article-separator {
         margin-left: 0;
     }
