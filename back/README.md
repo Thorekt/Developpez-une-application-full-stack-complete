@@ -2,6 +2,35 @@
 
 Ce dossier contient la structure initiale d’une architecture microservices basée sur Spring Boot 4 et Spring Cloud 2025.
 
+## Creer les base de données
+
+Dans le répertoire `resources` se trouve 3 fichier sql permettant de créer les bases de données de chaque service.
+
+Il est nécéssaire de créer un utilisateur par base de données.
+
+Il est nécéssaire de renseigner les information de connexion au base de donnée dans les fichier de configuration de service conrrespondant dans le répertoire `config-repo` 
+
+## Lancement des microservice 
+
+Il est nécéssaire de respecter l'ordre de démarage:
+
+- 1 
+- - config-server
+- 2 
+- - discovery-server
+- 3 
+- - api-gateway
+- - article-service
+- - theme-service
+- - user-service
+
+Pour lancer un service, exécuter la commande dans son répertoire :
+```
+mvn spring-boot:run
+```
+
+Alternativement, l'extension VScode de spring boot peut etre utilisée pour lancer les services
+
 ## Structure du projet
 
 Le répertoire `back/` contient les services suivants :
