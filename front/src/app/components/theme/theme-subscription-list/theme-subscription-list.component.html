@@ -1,6 +1,6 @@
 <div class="section theme-subscription-list-section">
     <h1>Abonnements</h1>
-    <div class="theme list">
+    <div class="card-list theme-subscription-list">
         <app-theme-card *ngFor="let theme of subscribedThemes" [theme]="theme" [isSubscribed]="true"
             [canUnsubscribe]="true"></app-theme-card>
     </div>
