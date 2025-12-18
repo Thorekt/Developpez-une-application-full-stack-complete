@@ -69,6 +69,11 @@ export class CommentFormComponent implements OnInit, OnDestroy {
       this.error = 'Invalid article UUID.';
       return;
     }
+    if (this.form.invalid) {
+      this.error = 'Please fill in all required fields.';
+      this.submitting = false;
+      return;
+    }
     const data: CreateCommentRequest = {
       articleUuid: this.articleUuid,
       content: this.form.value.content

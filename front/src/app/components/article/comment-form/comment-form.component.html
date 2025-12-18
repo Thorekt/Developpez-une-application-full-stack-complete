@@ -1,16 +1,16 @@
-<div>
-    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+<form [formGroup]="form" (ngSubmit)="submit()" class="comment-form">
+    <div class="comment-input-wrapper">
         <mat-form-field appearance="outline" class="comment-input-field">
             <mat-label>Écrivez ici votre commentaire</mat-label>
             <textarea matInput formControlName="content" rows="4"></textarea>
         </mat-form-field>
 
-        <div *ngIf="error" class="server-error">
-            {{ error }}
-        </div>
-        <button mat-raised-button color="primary" class="submit-btn" type="submit">
-            Poster le commentaire
+        <button type="submit" class="submit-btn">
+            <img src="/assets/send.svg" alt="Envoyer" />
         </button>
+    </div>
 
-    </form>
-</div>
+    <div *ngIf="error" class="server-error">
+        {{ error }}
+    </div>
+</form>

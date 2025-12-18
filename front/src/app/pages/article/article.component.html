@@ -1,23 +1,25 @@
 <app-navbar></app-navbar>
 <div class="container article-container">
+    <button class="back-btn" (click)="goBack()">←</button>
+
     <div *ngIf="loadingArticle" class="loading-indicator">
         <p>Loading article...</p>
     </div>
     <div *ngIf="error">
         <p class="error-message">{{ error }}</p>
     </div>
-    <div *ngIf="!loadingArticle && article">
+    <div *ngIf="!loadingArticle && article" class="article">
         <header class="article-header">
             <h1 class="article-page-title">{{ article.title }}</h1>
             <div class="article-meta">
-                <span>{{article.createdAt| date:'medium'}}</span>
-                <span *ngIf="loadingUser">Loading author...</span>
+                <span>{{ article.createdAt | date:'dd/MM/yy HH:mm' }}</span>
                 <span *ngIf="!loadingUser && user">{{ user.username }}</span>
-                <span *ngIf="loadingTheme">Loading theme...</span>
                 <span *ngIf="!loadingTheme && theme">{{ theme.title }}</span>
             </div>
         </header>
         <article class="article-content" [innerHTML]="article.content"></article>
+
+        <hr class="article-separator">
 
         <app-comment-section [articleUuid]="article.uuid"></app-comment-section>
     </div>

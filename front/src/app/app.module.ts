@@ -7,6 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+
 
 // Forms
 import { ReactiveFormsModule } from '@angular/forms';
@@ -55,6 +57,7 @@ import { ThemeSubscriptionListComponent } from './components/theme/theme-subscri
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIconModule,
     HttpClientModule
   ],
   providers: [

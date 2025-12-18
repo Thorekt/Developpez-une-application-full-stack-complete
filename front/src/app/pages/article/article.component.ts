@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ArticleResponse } from 'src/app/core/models/responses/article/article-response.model';
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
@@ -51,7 +51,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
     private articleService: ArticleService,
     private themeService: ThemeService,
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   /**
@@ -142,6 +143,13 @@ export class ArticleComponent implements OnInit, OnDestroy {
         }
       });
 
+  }
+
+  /**
+   * Navigates back to the home page.
+   */
+  goBack() {
+    this.router.navigate(['/']);
   }
 
 }
