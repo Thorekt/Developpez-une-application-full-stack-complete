@@ -21,9 +21,11 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 export class ThemeCardComponent implements OnInit, OnDestroy {
   @Input() theme!: ThemeResponse;
   @Input() isSubscribed: boolean = false;
+  @Input() canUnsubscribe: boolean = false;
 
   error?: string;
   success?: string;
+  posting?: boolean = false;
 
   themeServiceSubscription?: Subscription;
 
@@ -60,6 +62,12 @@ export class ThemeCardComponent implements OnInit, OnDestroy {
    * Handles the action of subscribing to a theme.
    */
   postSubscribeAction(): void {
+    if (this.posting) {
+      return;
+    }
+
+    this.posting = true;
+
     const data: SubscriptionRequest = {
       themeUuid: this.theme.uuid
     };
@@ -79,8 +87,56 @@ export class ThemeCardComponent implements OnInit, OnDestroy {
         console.error(e);
         this.isSubscribed = false;
         this.error = "Failed to subscribe to the theme. Please try again.";
+      },
+      complete: () => {
+        this.posting = false;
       }
     });
 
+  }
+
+  /**
+   * Unsubscribes the user from the theme represented by this card.
+   */
+  unsubscribe(): void {
+    this.isSubscribed = false;
+
+    this.postUnsubscribeAction();
+  }
+
+  /**
+   * Handles the action of unsubscribing from a theme.
+   */
+  postUnsubscribeAction(): void {
+    if (this.posting) {
+      return;
+    }
+
+    this.posting = true;
+
+    const data: SubscriptionRequest = {
+      themeUuid: this.theme.uuid
+    };
+
+    this.themeServiceSubscription = this.themeService.unsubscribeFromTheme(data).subscribe({
+      next: (response: SuccessResponse | ErrorResponse) => {
+        if ('message' in response) {
+          this.success = response.message;
+          this.error = undefined;
+        } else {
+          this.error = response.error || "An error occurred while unsubscribing from the theme.";
+          this.isSubscribed = true;
+          this.success = undefined;
+        }
+      },
+      error: (e) => {
+        console.error(e);
+        this.isSubscribed = true;
+        this.error = e.error || "Failed to unsubscribe from the theme. Please try again.";
+      },
+      complete: () => {
+        this.posting = false;
+      }
+    });
   }
 }

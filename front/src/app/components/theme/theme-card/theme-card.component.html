@@ -6,8 +6,12 @@
         <p>{{ theme.description }}</p>
     </div>
     <div class="card-footer">
-        <button mat-raised-button color="primary" (click)="subscribe()" [disabled]="isSubscribed">
+        <button *ngIf="!isSubscribed ||(isSubscribed && !canUnsubscribe)" mat-raised-button color="primary"
+            (click)="subscribe()" [disabled]="isSubscribed">
             {{ isSubscribed ? 'Déjà abonné' : 'S\'abonner' }}
+        </button>
+        <button *ngIf="isSubscribed && canUnsubscribe" mat-raised-button color="primary" (click)="unsubscribe()">
+            Se désabonner
         </button>
         <div *ngIf="error" class="error-message">{{ error }}</div>
     </div>
