@@ -56,7 +56,7 @@ public class SubscriptionService {
         if (subscription == null) {
             throw new NotFoundException();
         }
-        subscriptionRepository.deleteByUuid(subscription.getUuid());
+        subscriptionRepository.delete(subscription);
     }
 
     /**

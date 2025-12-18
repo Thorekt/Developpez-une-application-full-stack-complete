@@ -97,7 +97,7 @@ public class SubscriptionServiceTest {
 
         // Then
         Mockito.verify(mockSubscriptionRepository).findByUserUuidAndTheme_Uuid(userUuid, themeUuid);
-        Mockito.verify(mockSubscriptionRepository).deleteByUuid(subscription.getUuid());
+        Mockito.verify(mockSubscriptionRepository).delete(subscription);
     }
 
     @Test
