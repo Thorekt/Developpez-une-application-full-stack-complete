@@ -1,13 +1,13 @@
 <div class="card article-card" (click)="navigateToArticle()">
     <header class="card-header">
-        <h2 class="article-title">{{ article.title }}</h2>
-        <div class="article-meta">
-            <span class="article-date">{{ article.createdAt | date:'medium' }}</span>
-            <span class="article-author">{{ user?.username }}</span>
+        <h2 class="article-title" [title]="article.title">{{ article.title }}</h2>
+        <div class="meta">
+            <span class="date">{{ article.createdAt | date:'dd/MM/yy HH:mm' }}</span>
+            <span class="author">{{ user?.username }}</span>
         </div>
     </header>
 
     <div class="card-body">
-        <p class="article-content">{{ article.content }}</p>
+        <p class="content">{{ article.content }}</p>
     </div>
 </div>
