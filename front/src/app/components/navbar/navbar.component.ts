@@ -15,6 +15,7 @@ import { AuthService } from 'src/app/core/services/user/auth.service';
 export class NavbarComponent {
 
   isLogged = false;
+  isMenuOpen = false;
 
   /**
    * Constructs an instance of NavbarComponent.
@@ -60,5 +61,19 @@ export class NavbarComponent {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  /**
+   * toggles the navigation menu visibility.
+   */
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  /**
+   * closes the navigation menu.
+   */
+  closeMenu(): void {
+    this.isMenuOpen = false;
   }
 }
