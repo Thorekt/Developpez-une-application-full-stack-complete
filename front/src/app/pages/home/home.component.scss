@@ -1,12 +1,41 @@
-.container {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
 .btn-group {
   display: flex;
   gap: 100px;
+}
+
+@media screen and (max-width: 1024px) {
+  .logo {
+    max-width: 500px;
+  }
+
+  .btn-group {
+    gap: 80px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .logo {
+    max-width: 300px;
+  }
+
+  .btn-group {
+    gap: 60px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .logo {
+    max-width: 300px;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    gap: 100px;
+  }
+}
+
+@media screen and (max-height: 480px) {
+  .btn-group {
+    gap: 50px;
+  }
 }
