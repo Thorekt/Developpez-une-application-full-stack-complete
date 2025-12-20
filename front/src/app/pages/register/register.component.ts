@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/user/auth.service';
 import { RegisterRequest } from 'src/app/core/models/requests/user/register-request.model';
@@ -7,6 +7,8 @@ import { AuthResponse } from 'src/app/core/models/responses/user/auth-response.m
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 import { passwordValidator } from 'src/app/core/validators/password.validator';
 import { Subscription } from 'rxjs';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
+import { HttpErrorResponse } from '@angular/common/http';
 
 /**
  * Register component that handles user registration. 
@@ -25,7 +27,7 @@ export class RegisterComponent implements OnDestroy {
 
   form: FormGroup;
   submitted = false;
-  serverError?: string;
+  error?: string;
 
   authServiceSubscription?: Subscription;
 
@@ -38,7 +40,8 @@ export class RegisterComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private errorProcessor: ErrorProcessor
   ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
@@ -66,7 +69,7 @@ export class RegisterComponent implements OnDestroy {
    */
   submit() {
     this.submitted = true;
-    this.serverError = undefined;
+    this.error = undefined;
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -81,12 +84,15 @@ export class RegisterComponent implements OnDestroy {
           this.authService.saveToken(response.token);
           this.router.navigate(['/feed']);
         } else {
-          this.serverError = response.error || 'Erreur lors de l’inscription.';
+          this.error = this.errorProcessor.processError(response.error || '');
         }
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         const apiError: ErrorResponse = err.error;
-        this.serverError = apiError?.error || 'Erreur lors de l’inscription.';
+        this.error = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
+        this.submitted = false;
       }
     });
   }

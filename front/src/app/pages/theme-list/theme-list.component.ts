@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -5,6 +6,7 @@ import { ErrorResponse } from 'src/app/core/models/responses/error-response.mode
 import { ThemeListResponse } from 'src/app/core/models/responses/theme/theme-list-response.model';
 import { ThemeResponse } from 'src/app/core/models/responses/theme/theme-response.model';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * ThemeList component that displays a list of themes.
@@ -37,7 +39,8 @@ export class ThemeListComponent implements OnInit, OnDestroy {
    * @param themeService 
    */
   constructor(private router: Router,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private errorProcessor: ErrorProcessor
   ) {
   }
 
@@ -68,12 +71,14 @@ export class ThemeListComponent implements OnInit, OnDestroy {
           this.error = null;
           this.fetchSubscribedThemes();
         } else {
-          this.error = response.error || 'UNEXPECTED_ERROR';
-          this.loading = false;
+          this.error = this.errorProcessor.processError(response.error || '');
         }
       },
-      error: (e: ErrorResponse) => {
-        this.error = e.error || 'UNEXPECTED_ERROR';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.error = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
         this.loading = false;
       }
     });
@@ -89,12 +94,14 @@ export class ThemeListComponent implements OnInit, OnDestroy {
           this.subscribedThemeUuids = response.themes.map(theme => theme.uuid);
           this.error = null;
         } else {
-          this.error = response.error || 'UNEXPECTED_ERROR';
+          this.error = this.errorProcessor.processError(response.error || '');
         }
-        this.loading = false;
       },
-      error: (e: ErrorResponse) => {
-        this.error = e.error || 'UNEXPECTED_ERROR';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.error = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
         this.loading = false;
       }
     });

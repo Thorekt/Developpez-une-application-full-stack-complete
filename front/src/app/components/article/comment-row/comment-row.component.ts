@@ -1,9 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommentResponse } from 'src/app/core/models/responses/article/comment-response.model';
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 import { UserResponse } from 'src/app/core/models/responses/user/user-response.model';
 import { UserService } from 'src/app/core/services/user/user.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * CommentRowComponent represents a single comment row in the comment section, displaying comment details and user information.
@@ -32,7 +34,8 @@ export class CommentRowComponent implements OnInit, OnDestroy {
    * @param userService UserService for fetching user information.
    */
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private errorProcessor: ErrorProcessor
   ) { }
 
   /**
@@ -60,17 +63,19 @@ export class CommentRowComponent implements OnInit, OnDestroy {
 
     this.userLoading = true;
     this.userServiceSubscription = this.userService.getUserByUuid(this.comment.userUuid).subscribe({
-      next: (data: UserResponse | ErrorResponse) => {
-        if ('username' in data) {
-          this.userName = data.username;
+      next: (response: UserResponse | ErrorResponse) => {
+        if ('username' in response) {
+          this.userName = response.username;
           this.userError = undefined;
         } else {
-          this.userError = 'User not found.';
+          this.userError = this.errorProcessor.processError(response.error || '');
         }
-        this.userLoading = false;
       },
-      error: (err: any) => {
-        this.userError = 'Failed to load user data.';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.userError = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
         this.userLoading = false;
       }
     });

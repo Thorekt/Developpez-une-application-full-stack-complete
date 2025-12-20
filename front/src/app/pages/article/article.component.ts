@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -8,6 +9,7 @@ import { UserResponse } from 'src/app/core/models/responses/user/user-response.m
 import { ArticleService } from 'src/app/core/services/article/article.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { UserService } from 'src/app/core/services/user/user.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * Component for displaying an article along with its associated user and theme information.
@@ -52,7 +54,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
     private themeService: ThemeService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private errorProcessor: ErrorProcessor
   ) { }
 
   /**
@@ -83,18 +86,20 @@ export class ArticleComponent implements OnInit, OnDestroy {
     this.loadingArticle = true;
     this.articleServiceSubscription = this.articleService.getArticleByUuid(this.articleUuid!)
       .subscribe({
-        next: (data: ArticleResponse | ErrorResponse) => {
-          if ('uuid' in data) {
-            this.article = data as ArticleResponse;
+        next: (response: ArticleResponse | ErrorResponse) => {
+          if ('uuid' in response) {
+            this.article = response as ArticleResponse;
             this.fetchUser();
             this.fetchTheme();
           } else {
-            this.error = (data as ErrorResponse).error || 'An error occurred while fetching the article.';
+            this.error = this.errorProcessor.processError(response.error || '');
           }
-          this.loadingArticle = false;
         },
-        error: (err) => {
-          this.error = 'Failed to load article.';
+        error: (err: HttpErrorResponse) => {
+          const apiError: ErrorResponse = err.error;
+          this.error = this.errorProcessor.processError(apiError.error || '');
+        },
+        complete: () => {
           this.loadingArticle = false;
         }
       });
@@ -107,16 +112,18 @@ export class ArticleComponent implements OnInit, OnDestroy {
     this.loadingUser = true;
     this.userServiceSubscription = this.userService.getUserByUuid(this.article!.userUuid)
       .subscribe({
-        next: (data: UserResponse | ErrorResponse) => {
-          if ('uuid' in data) {
-            this.user = data as UserResponse;
+        next: (response: UserResponse | ErrorResponse) => {
+          if ('uuid' in response) {
+            this.user = response as UserResponse;
           } else {
-            this.error += (data as ErrorResponse).error || 'An error occurred while fetching the user.';
+            this.error += this.errorProcessor.processError(response.error || '');
           }
-          this.loadingUser = false;
         },
-        error: (err: any) => {
-          this.error += err ? ' Failed to load user.' : '';
+        error: (err: HttpErrorResponse) => {
+          const apiError: ErrorResponse = err.error;
+          this.error += this.errorProcessor.processError(apiError.error || '');
+        },
+        complete: () => {
           this.loadingUser = false;
         }
       });
@@ -129,20 +136,21 @@ export class ArticleComponent implements OnInit, OnDestroy {
     this.loadingTheme = true;
     this.themeServiceSubscription = this.themeService.getThemeByUuid(this.article!.themeUuid)
       .subscribe({
-        next: (data: ThemeResponse | ErrorResponse) => {
-          if ('uuid' in data) {
-            this.theme = data;
+        next: (response: ThemeResponse | ErrorResponse) => {
+          if ('uuid' in response) {
+            this.theme = response;
           } else {
-            this.error += (data as ErrorResponse).error || 'An error occurred while fetching the theme.';
+            this.error = this.errorProcessor.processError(response.error || '');
           }
-          this.loadingTheme = false;
         },
-        error: (err: any) => {
-          this.error += err ? ' Failed to load theme.' : '';
+        error: (err: HttpErrorResponse) => {
+          const apiError: ErrorResponse = err.error;
+          this.error = this.errorProcessor.processError(apiError.error || '');
+        },
+        complete: () => {
           this.loadingTheme = false;
         }
       });
-
   }
 
   /**

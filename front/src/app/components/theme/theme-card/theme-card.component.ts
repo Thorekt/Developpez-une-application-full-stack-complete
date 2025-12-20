@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SubscriptionRequest } from 'src/app/core/models/requests/theme/subscription-request.model';
@@ -5,6 +6,7 @@ import { ErrorResponse } from 'src/app/core/models/responses/error-response.mode
 import { SuccessResponse } from 'src/app/core/models/responses/success-response.model';
 import { ThemeResponse } from 'src/app/core/models/responses/theme/theme-response.model';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * ThemeCardComponent represents a card displaying theme information and allows users to subscribe to themes.
@@ -34,7 +36,9 @@ export class ThemeCardComponent implements OnInit, OnDestroy {
    * 
    * @param themeService ThemeService for theme-related operations.
    */
-  constructor(private themeService: ThemeService) { }
+  constructor(private themeService: ThemeService,
+    private errorProcessor: ErrorProcessor
+  ) { }
 
   /**
    * Initializes the component.
@@ -78,15 +82,15 @@ export class ThemeCardComponent implements OnInit, OnDestroy {
           this.success = response.message;
           this.error = undefined;
         } else {
-          this.error = response.error || "An error occurred while subscribing to the theme.";
+          this.error = this.errorProcessor.processError(response.error || '');
           this.isSubscribed = false;
           this.success = undefined;
         }
       },
-      error: (e) => {
-        console.error(e);
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
         this.isSubscribed = false;
-        this.error = "Failed to subscribe to the theme. Please try again.";
+        this.error = this.errorProcessor.processError(apiError.error || '');
       },
       complete: () => {
         this.posting = false;
@@ -124,15 +128,15 @@ export class ThemeCardComponent implements OnInit, OnDestroy {
           this.success = response.message;
           this.error = undefined;
         } else {
-          this.error = response.error || "An error occurred while unsubscribing from the theme.";
+          this.error = this.errorProcessor.processError(response.error || '');
           this.isSubscribed = true;
           this.success = undefined;
         }
       },
-      error: (e) => {
-        console.error(e);
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
         this.isSubscribed = true;
-        this.error = e.error || "Failed to unsubscribe from the theme. Please try again.";
+        this.error = this.errorProcessor.processError(apiError.error || '');
       },
       complete: () => {
         this.posting = false;

@@ -6,6 +6,8 @@ import { LoginRequest } from 'src/app/core/models/requests/user/login-request.mo
 import { AuthResponse } from 'src/app/core/models/responses/user/auth-response.model';
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 import { Subscription } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * Login component that handles user authentication.
@@ -25,7 +27,7 @@ export class LoginComponent implements OnDestroy {
 
   form: FormGroup;
   submitted = false;
-  serverError?: string;
+  error?: string;
 
   authServiceSubscription?: Subscription;
 
@@ -39,7 +41,8 @@ export class LoginComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private errorProcessor: ErrorProcessor
   ) {
 
     this.form = this.fb.group({
@@ -67,7 +70,7 @@ export class LoginComponent implements OnDestroy {
    */
   submit() {
     this.submitted = true;
-    this.serverError = undefined;
+    this.error = undefined;
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -82,12 +85,15 @@ export class LoginComponent implements OnDestroy {
           this.authService.saveToken(response.token);
           this.router.navigate(['/feed']);
         } else {
-          this.serverError = response.error || "Une erreur est survenue lors de la connexion.";
+          this.error = this.errorProcessor.processError(response.error || '');
         }
       },
-      error: (err) => {
-        const apiErr: ErrorResponse = err.error;
-        this.serverError = apiErr?.error || "Une erreur est survenue lors de la connexion.";
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.error = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
+        this.submitted = false;
       }
     });
   }

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,6 +10,7 @@ import { ThemeListResponse } from 'src/app/core/models/responses/theme/theme-lis
 import { ThemeResponse } from 'src/app/core/models/responses/theme/theme-response.model';
 import { ArticleService } from 'src/app/core/services/article/article.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * NewArticle component that allows users to create a new article.
@@ -26,7 +28,7 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 })
 export class NewArticleComponent implements OnInit, OnDestroy {
   loading: boolean = false;
-  loadError?: string;
+  loadingError?: string;
 
   themes: ThemeResponse[] = [];
 
@@ -49,7 +51,8 @@ export class NewArticleComponent implements OnInit, OnDestroy {
     private articleService: ArticleService,
     private themeService: ThemeService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private errorProcessor: ErrorProcessor
   ) {
     this.form = this.fb.group({
       themeUuid: ['', Validators.required],
@@ -82,14 +85,16 @@ export class NewArticleComponent implements OnInit, OnDestroy {
       next: (response: ThemeListResponse | ErrorResponse) => {
         if ('themes' in response) {
           this.themes = response.themes;
-          this.loadError = undefined;
+          this.loadingError = undefined;
         } else {
-          this.loadError = response.error || 'UNEXPECTED_ERROR';
+          this.loadingError = this.errorProcessor.processError(response.error || '');
         }
-        this.loading = false;
       },
-      error: (e: ErrorResponse) => {
-        this.loadError = e.error || 'UNEXPECTED_ERROR';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.loadingError = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
         this.loading = false;
       }
     });
@@ -114,13 +119,17 @@ export class NewArticleComponent implements OnInit, OnDestroy {
         if ('message' in response) {
           this.submitError = undefined;
           this.navigateToFeed();
+
         } else {
-          this.submitError = response.error || 'UNEXPECTED_ERROR';
+          this.submitError = this.errorProcessor.processError(response.error || '');
         }
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         const apiError: ErrorResponse = err.error;
-        this.submitError = apiError.error || 'UNEXPECTED_ERROR';
+        this.submitError = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
+        this.submitted = false;
       }
     });
   }

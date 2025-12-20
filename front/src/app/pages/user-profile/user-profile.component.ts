@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -7,6 +8,7 @@ import { SuccessResponse } from 'src/app/core/models/responses/success-response.
 import { UserResponse } from 'src/app/core/models/responses/user/user-response.model';
 import { AuthService } from 'src/app/core/services/user/auth.service';
 import { UserService } from 'src/app/core/services/user/user.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 import { passwordValidator } from 'src/app/core/validators/password.validator';
 
 /**
@@ -47,7 +49,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private errorProcessor: ErrorProcessor
   ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
@@ -78,18 +81,20 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.loadingError = undefined;
     this.authServiceSubscription = this.authService.me().subscribe({
-      next: (data: UserResponse | ErrorResponse) => {
-        if ('username' in data) {
-          this.user = data;
+      next: (response: UserResponse | ErrorResponse) => {
+        if ('username' in response) {
+          this.user = response;
           this.prefillForm();
           this.loadingError = undefined;
         } else {
-          this.loadingError = data.error || 'An error occurred while fetching the user profile.';
+          this.loadingError = this.errorProcessor.processError(response.error || '');
         }
-        this.loading = false;
       },
-      error: (err: any) => {
-        this.loadingError = 'Failed to load user profile.';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.loadingError = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
         this.loading = false;
       }
     });
@@ -121,11 +126,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.form.reset();
           this.fetchUser();
         } else {
-          this.submitError = response.error || 'An error occurred while updating the profile.';
+          this.submitError = this.errorProcessor.processError(response.error || '');
         }
       },
-      error: (err: any) => {
-        this.submitError = 'Failed to update profile.';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.submitError = this.errorProcessor.processError(apiError.error || '');
       },
       complete: () => {
         this.submitted = false;

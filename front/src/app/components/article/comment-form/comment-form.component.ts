@@ -1,3 +1,4 @@
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -5,6 +6,7 @@ import { CreateCommentRequest } from 'src/app/core/models/requests/article/creat
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 import { SuccessResponse } from 'src/app/core/models/responses/success-response.model';
 import { ArticleService } from 'src/app/core/services/article/article.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * CommentFormComponent represents a form for submitting comments on an article.
@@ -39,7 +41,8 @@ export class CommentFormComponent implements OnInit, OnDestroy {
    */
   constructor(
     private fb: FormBuilder,
-    private articleService: ArticleService
+    private articleService: ArticleService,
+    private errorProcessor: ErrorProcessor
   ) {
     this.form = this.fb.group({
       content: ['', Validators.required]
@@ -85,14 +88,15 @@ export class CommentFormComponent implements OnInit, OnDestroy {
           this.commentCreated.emit();
           this.error = undefined;
         } else {
-          this.error = response.error || 'An error occurred while submitting the comment.';
+          this.error = this.errorProcessor.processError(response.error || '');
         }
-
-        this.form.reset();
-        this.submitting = false;
       },
-      error: (err: any) => {
-        this.error = 'Failed to submit comment.';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.error = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
+        this.form.reset();
         this.submitting = false;
       }
     });

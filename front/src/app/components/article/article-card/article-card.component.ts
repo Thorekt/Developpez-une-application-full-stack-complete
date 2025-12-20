@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -5,6 +6,7 @@ import { ArticleResponse } from 'src/app/core/models/responses/article/article-r
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 import { UserResponse } from 'src/app/core/models/responses/user/user-response.model';
 import { UserService } from 'src/app/core/services/user/user.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * ArticleCardComponent represents a card view of an article, displaying basic information and allowing navigation to the full article.
@@ -35,7 +37,8 @@ export class ArticleCardComponent implements OnInit, OnDestroy {
    */
   constructor(
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private errorProcessor: ErrorProcessor
   ) { }
 
   /**
@@ -67,12 +70,14 @@ export class ArticleCardComponent implements OnInit, OnDestroy {
           this.error = undefined;
         } else {
           const errorResponse = response as ErrorResponse;
-          this.error = errorResponse.error || 'Unknown error occurred.';
+          this.error = this.errorProcessor.processError(errorResponse.error || 'Unknown error occurred.');
         }
-        this.loadingUser = false;
       },
-      error: (err: any) => {
-        this.error = err || 'Error fetching user data.';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.error = this.errorProcessor.processError(apiError.error || 'Error fetching user data.');
+      },
+      complete: () => {
         this.loadingUser = false;
       }
     });

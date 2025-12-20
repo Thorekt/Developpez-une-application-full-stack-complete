@@ -8,6 +8,8 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { ArticleListByThemeUuidsInOrder } from 'src/app/core/models/requests/theme/article-list-by-theme-uiids-in-order.model';
 import { OrderType } from 'src/app/core/type/order.type';
 import { Subscription } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * Component for displaying the user's feed based on subscribed themes.
@@ -46,7 +48,8 @@ export class FeedComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private articleService: ArticleService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private errorProcessor: ErrorProcessor
   ) { }
 
   /**
@@ -69,6 +72,7 @@ export class FeedComponent implements OnInit, OnDestroy {
    */
   toggleOrder(): void {
     this.curentOrder = this.curentOrder === 'DESC' ? 'ASC' : 'DESC';
+    this.fetchFeed();
   }
 
   /**
@@ -95,13 +99,12 @@ export class FeedComponent implements OnInit, OnDestroy {
             this.error = "Aucun article disponible pour le moment dans vos thèmes abonnés.";
           }
         } else {
-          this.error = response.error;
+          this.error = this.errorProcessor.processError(response.error || '');
         }
-        this.loading = false;
       },
-      error: (e: ErrorResponse) => {
-        this.error = e.error || 'UNEXPECTED_ERROR';
-        this.loading = false;
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.error = this.errorProcessor.processError(apiError.error || '');
       }
     });
 
@@ -118,13 +121,14 @@ export class FeedComponent implements OnInit, OnDestroy {
           this.themeUuids = response.themes.map(theme => theme.uuid);
           this.fetchFeed();
         } else {
-          this.error = response.error;
-          this.loading = false;
-          return;
+          this.error = this.errorProcessor.processError(response.error || '');
         }
       },
-      error: (e: ErrorResponse) => {
-        this.error = e.error || 'UNEXPECTED_ERROR';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.error = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
         this.loading = false;
       }
     });

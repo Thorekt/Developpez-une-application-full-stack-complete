@@ -67,6 +67,10 @@ public class ArticleController {
                     .toList();
             ArticleListResponse response = new ArticleListResponse(articleDtos);
             return ResponseEntity.ok(response);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(new ErrorResponse("INVALID_FORMAT"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ErrorResponse("INTERNAL_SERVER_ERROR"));
         }

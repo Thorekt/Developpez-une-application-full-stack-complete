@@ -1,9 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommentListResponse } from 'src/app/core/models/responses/article/comment-list-response.model';
 import { CommentResponse } from 'src/app/core/models/responses/article/comment-response.model';
 import { ErrorResponse } from 'src/app/core/models/responses/error-response.model';
 import { ArticleService } from 'src/app/core/services/article/article.service';
+import { ErrorProcessor } from 'src/app/core/utils/error-processor';
 
 /**
  * CommentSectionComponent represents the comment section of an article, allowing users to view comments.
@@ -32,7 +34,9 @@ export class CommentSectionComponent implements OnInit, OnDestroy {
    * 
    * @param articleService ArticleService for managing article-related operations.
    */
-  constructor(private articleService: ArticleService) { }
+  constructor(private articleService: ArticleService,
+    private errorProcessor: ErrorProcessor
+  ) { }
 
   /**
    * Initializes the component and fetches comments for the article.
@@ -64,12 +68,14 @@ export class CommentSectionComponent implements OnInit, OnDestroy {
           this.comments = response.comments;
           this.error = undefined;
         } else {
-          this.error = response.error || 'An error occurred while fetching comments.';
+          this.error = this.errorProcessor.processError(response.error || '');
         }
-        this.loadingComments = false;
       },
-      error: (err) => {
-        this.error = 'Failed to load comments.';
+      error: (err: HttpErrorResponse) => {
+        const apiError: ErrorResponse = err.error;
+        this.error = this.errorProcessor.processError(apiError.error || '');
+      },
+      complete: () => {
         this.loadingComments = false;
       }
     });
